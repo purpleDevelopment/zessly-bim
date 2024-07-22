@@ -1,0 +1,626 @@
+<html>
+
+<head>
+
+<script src="js/jquery-3.7.1.min.js"></script>
+<script src="js/chart.js"></script>
+<script>
+
+// Shorthand for $( document ).ready()
+$(function() {
+
+
+packChart = savingsChart('0', '0', '0' )    
+mgsChart = chartMGS('0', '0', '0' ) 
+
+$(".input").on({
+    keyup: function() {
+      calculatePack();
+    },
+    blur: function() { 
+      calculatePack();
+    }
+});
+
+$(".inputMG").on({
+    keyup: function() {
+      calculateMGs();
+    },
+    blur: function() { 
+      calculateMGs();
+    }
+});
+
+
+});
+
+ function calculatePack() {
+
+ var input_val = parseFloat($('#otherCost').val());
+ var packs = parseFloat($('#packs').val());
+
+$('.otherTotal').html("&#163;"+(input_val * packs).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#zesslyPacks').html(packs);
+
+var zess_val = parseFloat($('#zesslyCost').val());
+
+$('.zesslyTotal').html("&#163;"+(zess_val* packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+var savings = (input_val * packs) - (zess_val * packs);
+
+
+$('#totalSavings').html("&#163;"+savings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+var compMonth = (input_val * packs)/12;
+var zessMonth = (zess_val * packs)/12;
+
+/*
+$('#3monthComp').html("&#163;"+(compMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6monthComp').html("&#163;"+(compMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9monthComp').html("&#163;"+(compMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#3monthZess').html("&#163;"+(zessMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6monthZess').html("&#163;"+(zessMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9monthZess').html("&#163;"+(zessMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+*/
+$('#3month').html("&#163;"+((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6month').html("&#163;"+((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9month').html("&#163;"+((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+/*
+$('#comp3month').html("&#163;"+(compMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#comp6month').html("&#163;"+(compMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#comp9month').html("&#163;"+(compMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#zess3month').html("&#163;"+(zessMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zess6month').html("&#163;"+(zessMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zess9month').html("&#163;"+(zessMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+*/
+$('#current3month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#current6month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#current9month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+$('#total3month').html("&#163;"+ ((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+$('#total6month').html("&#163;"+ ((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+$('#total9month').html("&#163;"+ ((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+
+
+
+$('#zessly3month').html("&#163;"+ ((input_val * packs) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zessly6month').html("&#163;"+ ((input_val * packs) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zessly9month').html("&#163;"+ ((input_val * packs) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+updateSavingsChart(packChart, (input_val * packs), (zess_val * packs), savings)
+
+ }
+
+
+
+ function calculateMGs() {
+
+
+ var input_val = parseFloat($('#otherMGCost').val());
+ var packs = parseFloat($('#MGs').val());
+
+
+console.log(input_val)
+console.log(packs);
+
+$('.otherMGTotal').html("&#163;"+(input_val * packs).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#zesslyMGs').html(packs);
+
+var zess_val = parseFloat($('#zesslyMGCost').val());
+
+$('.zesslyMGTotal').html("&#163;"+(zess_val* packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+var savings = (input_val * packs) - (zess_val * packs);
+
+
+$('#totalMGSavings').html("&#163;"+savings.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+var compMonth = (input_val * packs)/12;
+var zessMonth = (zess_val * packs)/12;
+
+/*
+$('#3monthMGComp').html("&#163;"+(compMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6monthMGComp').html("&#163;"+(compMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9monthMGComp').html("&#163;"+(compMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#3monthMGZess').html("&#163;"+(zessMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6monthMGZess').html("&#163;"+(zessMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9monthMGZess').html("&#163;"+(zessMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+*/
+$('#3monthMG').html("&#163;"+((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#6monthMG').html("&#163;"+((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#9monthMG').html("&#163;"+((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+/*
+
+$('#compMG3month').html("&#163;"+(compMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#compMG6month').html("&#163;"+(compMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#compMG9month').html("&#163;"+(compMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+$('#zessMG3month').html("&#163;"+(zessMonth*9).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zessMG6month').html("&#163;"+(zessMonth*6).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zessMG9month').html("&#163;"+(zessMonth*3).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+*/
+$('#currentMG3month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#currentMG6month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#currentMG9month').html("&#163;"+(input_val * packs).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+$('#totalMG3month').html("&#163;"+ ((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+$('#totalMG6month').html("&#163;"+ ((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+$('#totalMG9month').html("&#163;"+ ((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})); 
+
+
+
+$('#zesslyMG3month').html("&#163;"+ ((input_val * packs) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zesslyMG6month').html("&#163;"+ ((input_val * packs) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+$('#zesslyMG9month').html("&#163;"+ ((input_val * packs) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+
+
+updateMGChart(mgsChart, (input_val * packs), (zess_val * packs), savings)
+
+ }
+
+
+function updateSavingsChart(myChart,value1, value2, value3){
+    myChart.destroy();  
+    packChart = savingsChart(value1, value2, value3);
+}
+
+function updateMGChart(myChart,value1, value2, value3){
+    myChart.destroy();  
+    mgsChart = chartMGS(value1, value2, value3);
+}
+
+function savingsChart(data1, data2, data3 ){
+  var incSavings = document.getElementById("zessSavings");
+  var myChart = new Chart(incSavings, {
+      type: 'bar',
+      data: {
+          // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
+          labels: ['Total Comparator Infliximab Spend','Total Zessly (Infliximab) Spend','Total annual Potential Savings Changing to Zessly'],
+          datasets: [{
+              label: '',
+              data: [data1,data2,data3,],
+              backgroundColor: [
+                  'rgba(96, 36, 100, 1)',
+                  'rgba(30, 146, 20, 1)',
+                  'rgba(125, 203, 178, 1)',
+              ]
+          }]
+      },
+      options: {
+        plugins: {
+          legend: {
+              display: false,
+              position: 'top',
+            },
+          datalabels: {
+            anchor: 'end', // remove this line to get label in middle of the bar
+            align: 'end',
+            clamp: 'true',
+
+
+           labels: {
+           title: {
+            font: {
+              weight: 'bold',
+              size: '16px'
+            }
+          },
+            value: {
+              color: '#ffffff'
+            }
+          } 
+
+          },    
+          scales: {
+              y: {
+                display: false,
+                gridLines: {}
+                  //  beginAtZero: true,
+                  //   ticks: {
+                  //    callback: function(value, index, values) {
+                  //var str = value.toString();
+                  //                      return '£'+str.toLocaleString();
+                  //                }
+                  //},
+                  }
+              },
+              x: {
+                ticks: {
+                  color: '#000000',
+                  font: {
+                        weight: 600,
+                      size: 12,
+                    } ,
+               },
+               stacked: true, 
+              grid: { display: false },
+              }
+          }
+      }
+  });
+  return myChart;
+
+}
+function chartMGS(data1, data2, data3 ){
+  var incSavings = document.getElementById("zessMGSavings");
+  var myChart = new Chart(incSavings, {
+      type: 'bar',
+      data: {
+          // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
+          labels: ['Total Comparator Infliximab Spend','Total Zessly (Infliximab) Spend','Total annual Potential Savings Changing to Zessly'],
+          datasets: [{
+              label: '',
+              data: [data1,data2,data3,],
+              backgroundColor: [
+                  'rgba(96, 36, 100, 1)',
+                  'rgba(30, 146, 20, 1)',
+                  'rgba(125, 203, 178, 1)',
+              ]
+          }]
+      },
+      options: {
+        plugins: {
+          legend: {
+              display: false,
+              position: 'top',
+            },
+          datalabels: {
+            anchor: 'end', // remove this line to get label in middle of the bar
+            align: 'end',
+            clamp: 'true',
+
+
+           labels: {
+           title: {
+            font: {
+              weight: 'bold',
+              size: '16px'
+            }
+          },
+            value: {
+              color: '#ffffff'
+            }
+          } 
+
+          },    
+          scales: {
+              y: {
+                display: false,
+                gridLines: {}
+                  //  beginAtZero: true,
+                  //   ticks: {
+                  //    callback: function(value, index, values) {
+                  //var str = value.toString();
+                  //                      return '£'+str.toLocaleString();
+                  //                }
+                  //},
+                  }
+              },
+              x: {
+                ticks: {
+                  color: '#000000',
+                  font: {
+                        weight: 600,
+                      size: 12,
+                    } ,
+               },
+               stacked: true, 
+              grid: { display: false },
+              }
+          }
+      }
+  });
+  return myChart;
+
+}
+
+</script>
+
+    <title>BIM Calculator</title>
+    <!-- Latest compiled and minified CSS -->
+
+    <!-- Optional theme -->
+    <!--     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"> -->
+
+    <!-- Current doc CSS -->
+
+</head>
+
+<body>
+<!-- Navigation -->
+<div id="bim_nav">
+
+
+    <div id="packs" style="display:none;">
+        <h2>User Inputs</h2>
+            <table border="1">
+                <tr>
+                    <td></td>
+                    <td>Pack Price</td>
+                    <td>Number of Packs</td>
+                    <td>Total Per SKU</td>
+                </tr>   
+                <tr>
+                    <td>Comparator Infliximab 100mg x 1 vial in a pack</td>
+                    <td>£<input class="input" type="number" value='0' min="0" step="0.01" id="otherCost" /></td>
+                    <td><input class="input" type="number" value='0' min="1" step="1" id ="packs" /></td>
+                    <td class="otherTotal">£</td>
+                </tr> 
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Total Comparator Infliximab Spend</td>
+                    <td class="otherTotal" colspan="3">£</td>
+                </tr> 
+            </table>
+            <br>
+            <table border="1">
+                <tr>
+                    <td></td>
+                    <td>Pack Price</td>
+                    <td>Number of Packs</td>
+                    <td>Total Per SKU</td>
+                </tr>   
+                <tr>
+                    <td>Zessly (Infliximab) 100mg x 1 vial in a pack</td>
+                    <td>£<input class="input" value='0' type="number" min="0" step="0.01" id="zesslyCost" /></td>
+                    <td id="zesslyPacks"></td>
+                    <td class="zesslyTotal">£</td>
+                </tr> 
+                <tr>
+                    <td colspan="4">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Total Zessly (Infliximab) Spend</td>
+                    <td class="zesslyTotal" colspan="3">£</td>
+                </tr> 
+            </table>
+            <hr>
+            <h2>Results</h2>
+            <table border="1">
+                <tr>
+                    <td>Total Annual Potential Savings Changing to Zessly</td>
+                    <td id="totalSavings">£</td>
+                </tr>    
+            </table>
+
+            <h3>Incremental Savings</h3>
+            <p>The below shows the potential savings available in 3 monthly increments when changing to Zessly. </p>
+            <table border="1">
+                <tr>
+                    <td></td>
+                    <td>3 months savings</td>
+                    <td>6 months savings</td>
+                    <td>9 months savings</td>
+                </tr>   
+                <!--
+                <tr>
+                    <td></td>
+                    <td id="3monthComp">£</td>
+                    <td id="6monthComp">£</td>
+                    <td id="9monthComp">£</td>
+                </tr> 
+                <tr>
+                    <td></td>
+                    <td id="3monthZess">£</td>
+                    <td id="6monthZess">£</td>
+                    <td id="9monthZess">£</td>
+                </tr>
+                --> 
+                <tr>
+                    <td>Incremental Monthly Savings Changing to Zessly</td>
+                    <td id="3month">£</td>
+                    <td id="6month">£</td>
+                    <td id="9month">£</td>
+                </tr> 
+            </table>    
+            <h3>Speed of Switch Savings</h3>
+            <p>The below shows the potential savings available in a full 12 month period when changing to Zessly. </p>
+
+            <table border="1">
+                <tr>
+                    <td></td>
+                    <td>3 months to switch</td>
+                    <td>6 months to switch</td>
+                    <td>9 months to switch</td>
+                </tr>  
+                <!-- 
+                <tr>
+                    <td>Comparator Infliximab</td>
+                    <td id="comp3month">£</td>
+                    <td id="comp6month">£</td>
+                    <td id="comp9month">£</td>
+                </tr>
+                <tr>
+                    <td>Zessly</td>
+                    <td id="zess3month">£</td>
+                    <td id="zess6month">£</td>
+                    <td id="zess9month">£</td>
+                </tr> 
+            -->
+                <tr>
+                    <td>Current Spend - No Switch</td>
+                    <td id="current3month">£</td>
+                    <td id="current6month">£</td>
+                    <td id="current9month">£</td>
+                </tr> 
+                <tr>
+                    <td>Total Spend - With Switch</td>
+                    <td id="total3month">£</td>
+                    <td id="total6month">£</td>
+                    <td id="total9month">£</td>
+                </tr> 
+                <tr>
+                    <td>Zessly Potential Savings</td>
+                    <td id="zessly3month">£</td>
+                    <td id="zessly6month">£</td>
+                    <td id="zessly9month">£</td>
+                </tr> 
+            </table>    
+        <canvas height="400px" id="zessSavings" style="width:100%;height:100%;" width="920px"></canvas>
+
+    </div>
+    
+
+
+
+<div id="mgs">
+
+<h2>User Inputs</h2>
+
+<table border="1">
+    <tr>
+        <td></td>
+        <td>Price per MG</td>
+        <td>Number of MGs</td>
+        <td>Total Per SKU</td>
+    </tr>   
+    <tr>
+        <td>Comparator Infliximab - Total MG Usage</td>
+        <td>£<input class="inputMG" type="number" value='0' min="0" step="0.01" id="otherMGCost" /></td>
+        <td><input class="inputMG" type="number" value='0' min="1" step="1" id ="MGs" /></td>
+        <td class="otherMGTotal">£</td>
+    </tr> 
+    <tr>
+        <td colspan="4">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>Total Comparator Infliximab Spend</td>
+        <td class="otherTotal" colspan="3">£</td>
+
+    </tr> 
+</table>
+<br>
+<table border="1">
+    <tr>
+        <td></td>
+        <td>Price per MG</td>
+        <td>Number of MGs</td>
+        <td>Total Per SKU</td>
+    </tr>   
+    <tr>
+        <td>Zessly (Infliximab) - Total MG Usage</td>
+        <td>£<input class="inputMG" value='0' type="number" min="0" step="0.01" id="zesslyMGCost" /></td>
+        <td id="zesslyMGs"></td>
+        <td class="zesslyMGTotal">£</td>
+    </tr> 
+    <tr>
+        <td colspan="4">&nbsp;</td>
+    </tr>
+    <tr>
+        <td>Total Zessly (Infliximab) Spend</td>
+        <td class="zesslyMGTotal" colspan="3">£</td>
+
+    </tr> 
+</table>
+
+<hr>
+<h2>Results</h2>
+<table border="1">
+    <tr>
+        <td>Total Annual Potential Savings Changing to Zessly</td>
+        <td id="totalMGSavings">£</td>
+    </tr>    
+</table>
+
+<h3>Incremental Savings</h3>
+<p>The below shows the potential savings available in 3 monthly increments when changing to Zessly. </p>
+<table border="1">
+    <tr>
+        <td></td>
+        <td>3 months savings</td>
+        <td>6 months savings</td>
+        <td>9 months savings</td>
+    </tr>   
+    <!--
+    <tr>
+        <td></td>
+        <td id="3monthMGComp">£</td>
+        <td id="6monthMGComp">£</td>
+        <td id="9monthMGComp">£</td>
+    </tr> 
+    <tr>
+        <td></td>
+        <td id="3monthMGZess">£</td>
+        <td id="6monthMGZess">£</td>
+        <td id="9monthMGZess">£</td>
+    </tr>
+    --> 
+    <tr>
+        <td>Incremental Monthly Savings Changing to Zessly</td>
+        <td id="3monthMG">£</td>
+        <td id="6monthMG">£</td>
+        <td id="9monthMG">£</td>
+    </tr> 
+</table>    
+
+<h3>Speed of Switch Savings</h3>
+<p>The below shows the potential savings available in a full 12 month period when changing to Zessly. </p>
+
+<table border="1">
+    <tr>
+        <td></td>
+        <td>3 months to switch</td>
+        <td>6 months to switch</td>
+        <td>9 months to switch</td>
+    </tr>   
+<!--
+    <tr>
+        <td>Comparator Infliximab</td>
+        <td id="compMG3month">£</td>
+        <td id="compMG6month">£</td>
+        <td id="compMG9month">£</td>
+    </tr> 
+    <tr>
+        <td>Zessly</td>
+        <td id="zessMG3month">£</td>
+        <td id="zessMG6month">£</td>
+        <td id="zessMG9month">£</td>
+    </tr>
+    --> 
+    <tr>
+        <td>Current Spend - No Switch</td>
+        <td id="currentMG3month">£</td>
+        <td id="currentMG6month">£</td>
+        <td id="currentMG9month">£</td>
+    </tr> 
+    <tr>
+        <td>Total Spend - With Switch</td>
+        <td id="totalMG3month">£</td>
+        <td id="totalMG6month">£</td>
+        <td id="totalMG9month">£</td>
+    </tr> 
+    <tr>
+        <td>Zessly Potential Savings</td>
+        <td id="zesslyMG3month">£</td>
+        <td id="zesslyMG6month">£</td>
+        <td id="zesslyMG9month">£</td>
+    </tr> 
+</table>    
+
+<canvas height="400px" id="zessMGSavings" style="width:100%;height:100%;" width="920px"></canvas>
+
+</div>
+
+</div>
+
+
+   
+
+
+</body>
+
+</html>
