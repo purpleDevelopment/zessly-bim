@@ -32,6 +32,26 @@ $(".inputMG").on({
 });
 
 
+$("#packs_btn").on({
+    click: function() {
+      $("#packs").show();
+      $("#mgs").hide();
+      
+    }
+});
+
+$("#mgs_btn").on({
+    click: function() {
+      $("#packs").hide();
+      $("#mgs").show();
+      
+    }
+});
+
+
+
+
+
 });
 
  function calculatePack() {
@@ -343,8 +363,11 @@ function chartMGS(data1, data2, data3 ){
 <div id="bim_nav">
 
 
+<button id="packs_btn">Packs</button>
+<button id="mgs_btn">MGs</button>
+
     <div id="packs" style="display:none;">
-        <h2>User Inputs</h2>
+        <h2>Pack User Inputs</h2>
             <table border="1">
                 <tr>
                     <td></td>
@@ -479,7 +502,7 @@ function chartMGS(data1, data2, data3 ){
 
 <div id="mgs">
 
-<h2>User Inputs</h2>
+<h2>MGs User Inputs</h2>
 
 <table border="1">
     <tr>
