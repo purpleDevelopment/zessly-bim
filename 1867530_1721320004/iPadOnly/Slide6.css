@@ -1,0 +1,28 @@
+/* Popups */
+#button_1 {
+    top: 28%;
+    left: 77.2%;
+    width: 18.4%;
+    height: 14.4%;
+}
+#button_2 {
+    top: 45.7%;
+    left: 77.2%;
+    width: 18.4%;
+    height: 14.4%;
+}
+#study_btn {
+    position: absolute;
+    top: 78%;
+    left: 33%;
+    width: 34%;
+    height: 8%;
+}
+#study_back_btn {
+    display: none;
+    position: absolute;
+    top: 76%;
+    left: 88%;
+    width: 9%;
+    height: 11%;
+}

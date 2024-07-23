@@ -1,0 +1,384 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Keynote</title>
+
+	<!-- Set this flag to be able to run as a full screen app from the home page (requires user to click "Add to Home Screen" button -->
+	<!--
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	-->
+
+<!-- Prevent user from being able to scale the page -->
+<meta name="viewport" content="initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.5, user-scalable = yes, width = device-width" />
+<link href="assets/player/KeynoteDHTMLPlayer-min.css" rel="stylesheet" type="text/css" media="screen"/>
+<style>
+
+#progressbar{
+	position: absolute;
+	left:10px;
+	z-index:5;
+	top:10px;
+	width:60px;
+	height:10px;
+	opacity: 0.7;
+}
+.notes{
+	left: 100px;
+	bottom: 35px;
+	background-color: #5e5e5e;
+	color: #fffeff;
+	position: absolute;
+	border: 1px solid #424242;
+	display: none;
+	height: 120px;
+	width: 824px;
+	padding: 20px;
+	opacity:0.9;
+	overflow: scroll;
+	font-family: "Sansation";
+	-webkit-overflow-scrolling: touch;
+}
+
+</style>
+<script type="text/javascript" src="fastclick.js"></script>
+<script type="text/javascript" src="assets/player/javascript-min.js"></script>
+<script type="text/javascript">
+var slideCounter =0;
+var jsVersion = 3;
+function okPressedFromRemote(){
+	gShowController.advanceToNextBuild("processClickOrTapAtDisplayCoOrds");
+	return "OK";
+}
+function showPDF(filename,title,launchMode,lockMode,references,subFolder,jumpPage,fileID){
+	try{
+		//Ti.App.fireEvent('closeOpenModal',{'reset':true});
+	 	Ti.App.fireEvent('loadPDF',{'file':filename,'titleV':title,'viewMode':launchMode,'lockViewMode':lockMode,'references':null,'articles':null,'annotationEnabled':true,"subFolder":subFolder,'jumpToPage':(jumpPage-1),'pdfID':fileID});
+	}
+	catch(e){
+		alert(e);
+	}
+}
+function playVideo(filename,isOnline,fileID){
+	
+//		Ti.App.fireEvent('closeOpenModal',{'reset':true});
+	Ti.App.fireEvent('loadMovie',{'file':filename,'isOnline':isOnline,'fileID':fileID});
+}
+function showSurvey(url,title,fileID){
+
+//		Ti.App.fireEvent('closeOpenModal',{'reset':true});
+	Ti.App.fireEvent('loadWebPageFromFolder',{'urlValue':url.replace(".zip","").replace("surveys","")+"/index.html",'title':title,'showBar':true,'folderName':"surveys",'allowPortrait':false,'fileID':fileID});
+
+}
+
+function showPresentation(ID, subID) {
+
+	Ti.App.fireEvent('launchContentWithID', {
+		'fileID': ID,
+		'subID': subID
+	});
+}
+function showZip(url, title, fileID) {
+	Ti.App.fireEvent('loadWebPageFromFolder', {
+		'urlValue': url.replace(".zip", "").replace("zip", "") + "/index.html",
+		'title': title,
+		'showBar': true,
+		'folderName': "zip",
+		'allowPortrait': false,
+		'fileID': fileID
+	});
+}
+
+function showPage(pageURL,title){
+//	Ti.App.fireEvent('closeOpenModal',{'reset':true});
+	
+	Ti.App.fireEvent('loadWebPage',{'urlValue':pageURL,'title':pageURL,'showBar':true,'allowPortrait':true});
+}
+
+function closePresentation(){
+
+	Ti.App.fireEvent('closeOpenModal',{"version":jsVersion});
+	Ti.App.fireEvent('closeScrollWeb');
+}
+function customEvent(eventName){
+	Ti.App.fireEvent('sendStatsFromHTML',{'event_name':"customPresEvent",'event_params':eventName,'event_extra':getPageNumber()});
+}
+function gotoPage(page){
+	Ti.App.fireEvent('closeOpenModal',{"version":jsVersion});
+	Ti.App.fireEvent('gotoVSlideH',{'p':page});
+}
+var hasHyperlinks = false;
+var lastTimeTouchEnded = 0;
+var lastPosition = null;
+document.observe("touchstart", function(e) {
+	if(e.changedTouches.length>1){
+		return;
+		
+	}
+	var currentTouchTime = new Date();
+		var pageX = e.changedTouches[0].pageX;
+		var pageY = e.changedTouches[0].pageY;
+	if((currentTouchTime - lastTimeTouchEnded) < 400){
+		if(Math.abs(pageY - lastPosition.pageY) < 30){
+			Ti.App.fireEvent('tappedOnSlideD',{'cX':pageX,'cY':pageY,'animation':true});
+		}
+		e.preventDefault();
+	}
+	else{
+		
+			if(pageX<50){
+					Ti.App.fireEvent('sendCLMPoint',{'pX':pageX,'pY':pageY});
+					e.preventDefault();
+			}
+			lastPosition =  e.changedTouches[0];
+			lastTimeTouchEnded = currentTouchTime;
+	}
+	
+});
+var isPitching = false;
+var isTwoD = false;
+var isPreventDefault = true;
+var sCounter = 0;
+var notesShown = false;
+
+function showNotes(e) {
+	
+	try{
+		if (notesShown) {
+			$("notes").style.display='';
+			notesShown = false;
+		} else {
+			$("notes").style.display='block';
+			notesShown = true;
+		}
+		e.preventDefault();
+	}
+	catch(e){
+	}
+}
+function closeNotes(e) {
+
+	notesShown = false;
+	$("notes").style.display='';
+	e.preventDefault();
+}
+var ratio = 2.56;
+
+function getParameters(parameters){
+	document.documentElement.style.webkitTapHighlightColor = "rgba(0,0,0,0.0)";
+	var paramO = JSON.parse(parameters);
+	isPitching = paramO.isPitching;
+	isTwoD = paramO.isTwoD;
+	slideCounter = paramO.pageNumber;
+	sCounter = slideCounter;
+	ratio*=(window.innerWidth/1024);
+	try{
+		
+		if(paramO.animationLibVersion!=null && paramO.animationLibVersion>=1){
+			isPreventDefault = false;
+		}
+	}
+	catch(e){
+		alert(e);
+	}
+		// if(paramO.player!="connectPlayer")
+				// $('body').setStyle({backgroundImage:"url(Slide"+(0+parseInt(slideCounter)+1)+".png)",backgroundRepeat:"no-repeat"});
+
+	
+	setupShowController();
+	try{
+		new Ajax.Request('./slide'+(parseInt(slideCounter)+1)+'.json',
+		{
+			method:'get',
+			onSuccess: function(transport){
+				var response = transport.responseText || "no response text";
+				var slideJSON = JSON.parse(response);
+				if (slideJSON.notes != null && slideJSON.notes != "") {
+					$('overlay').insert({after:"<div class=\"notesArea\" onClick=\"showNotes(event);\" style=\"top:0px;left:974px;position:absolute; \"><img height=\"40\" src=\"note.png\"></div><div id=\"notes\" class=\"notes\" onClick=\"closeNotes(event);\">" + slideJSON.notes + "</div>"});
+
+				}
+				
+				if(slideJSON.hotspots!=null && slideJSON.hotspots.length>0){
+					for(var i = 0;i<slideJSON.hotspots.length;i++){
+						var hotspot = slideJSON.hotspots[i];
+
+						var launchString = "";
+						var targetObject = hotspot.actionParameter;
+
+						switch(hotspot.actionID){
+							case "jumpPres":
+							launchString = "gotoPage("+(hotspot.actionParameter-1)+");";
+							break;
+							case "launchPres":
+							switch(targetObject.category){
+								case "pdf":
+								launchString = 'showPDF(\'pdfs/'+targetObject.filename+'\',\''+targetObject.body+'\',1,null,null,null,'+hotspot.secondParameter+','+targetObject.ID+');';						
+								break;
+								case "video":
+								launchString = 'playVideo(\'videos/'+targetObject.filename+'\',0,'+targetObject.ID+');';						
+								break;
+								case "surveys":
+								launchString = 'showSurvey(\''+ targetObject.filename +'\',\''+targetObject.body +'\','+targetObject.ID+');';					
+								break;
+								case "presentation":
+								launchString = 'showPresentation(' + targetObject.ID + ',' + hotspot.secondParameter + ')';
+								break;
+							case "zip":
+								launchString = 'showZip(\'' + targetObject.filename + '\',\'' + targetObject.body + '\',' + targetObject.ID + ');';
+								break;
+								default:
+									
+								break;
+							}
+
+							break;
+							case "exitPres":
+							launchString = "closePresentation();";
+							break;
+							case "gotoURL":
+							launchString = "showPage('"+ hotspot.actionParameter +"');";
+							break;
+							case "reportPres":
+							launchString = "customEvent('"+hotspot.actionParameter+"');";
+							break;
+							default:
+							break;
+						}
+						try{
+							var opacity = "0.1";
+							if(isPitching==true)
+								opacity = "0.0";
+							$('overlay').insert({after:"<div onClick=\""+launchString+"\" style=\"top:"+hotspot.y*ratio+"px;left:"+hotspot.x*ratio+"px;width:"+hotspot.width*ratio+"px;height:"+hotspot.height*ratio+"px;position:absolute; background-color:black;opacity:"+opacity+";border-radius:15px;\" class='hotspot'></div>"});
+							hasHyperlinks = true;
+						}
+						catch(e){
+							alert(e);
+						}
+					}
+				}
+			},
+			onFailure: function(){ alert("failed downloading"); }
+		});
+	}
+	catch(e){
+		alert(e);
+	}
+}
+function manageBullets(current,total){
+
+	var bullets = "";
+	current+=1;
+	for(var i = 0;i<(current);i++){
+		bullets+="<img src='assets/bullet_empty.png'>";
+	}
+	for(var i = 0;i<(total-current);i++){
+		bullets+="<img src='assets/bullet.png'>";
+	}
+	window.document.getElementById("progressbar").innerHTML = bullets;
+	Ti.App.fireEvent('sendAnimationNext');
+
+
+
+
+}
+
+
+
+</script>
+<style>
+body{
+	width:1024px;
+	height:768px;
+	overflow:hidden;
+}
+#stageArea{
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+</style>
+</head>
+
+<body width="1024" height="768"  marginwidth="0" marginheight="0" id="body">
+
+	<div id="stageArea">
+		<div id="stage" class="stage">
+		</div>
+
+		<div id="hyperlinkPlane" class="stage">
+		</div>
+	</div>
+	<div id="background" class="bigBlackSquare">
+	</div>
+	
+	<div id="embeddedControlBar" style="display:none;">
+		<div id="embeddedControlBarBackground">
+			<div id="embeddedControlBarBezel_LeftEndCap" class="embeddedControlBarBezel">
+			</div>
+
+			<div id="embeddedControlBarBezel_Filler" class="embeddedControlBarBezel">
+			</div>
+
+			<div id="embeddedControlBarBezel_RightEndCap" class="embeddedControlBarBezel">
+			</div>
+		</div>
+
+		<div id="embeddedControls_Restart" class="embeddedControls_Restart_Disabled">
+		</div>
+
+		<div id="embeddedControls_Previous" class="embeddedControls_Previous_Disabled">
+		</div>
+
+		<div id="embeddedSlideCounterSection" class="embeddedSlideCounter">
+			<span id="embeddedSlideCounter">1/N</span>
+		</div>
+
+		<div id="embeddedControls_Next" class="embeddedControls_Next_Disabled">
+		</div>
+
+		<div id="embeddedControls_Mute" class="embeddedControls_Mute_Class">
+		</div>
+	</div>
+
+	<div id="dummy"></div>
+
+	<div id="hud" style="display:none;">
+		<div id="hudBackground">
+			<div id="hudBezelLeftEndCap" class="hudBezel">
+			</div>
+
+			<div id="hudBezelFiller" class="hudBezel">
+			</div>
+
+			<div id="hudBezelRightEndCap" class="hudBezel">
+			</div>
+
+			<img id="hudBezelLeftDivider" class="hudBezel">
+			<img id="hudBezelRightDivider" class="hudBezel">
+		</div>
+
+		<div id="hudMuteButton" class="hudMuteButton">
+		</div>
+
+		<div id="hudPreviousButton" class="hudPreviousButtonDisabled">
+		</div>
+
+		<div id="hudSlideCounterSection" class="hudSlideCounter">
+			<span id="hudSlideCounter"></span>
+		</div>
+
+		<div id="hudNextButton" class="hudNextButtonDisabled">
+		</div>
+
+		<div id="hudCloseButton" class="hudCloseButtonEnabled" onClick="gShowController.exitShow();">
+		</div>
+	</div>
+
+	<div id="infoPanelButton" onClick="gShowController.showInfoPanel();" style="display:none;">
+	</div>
+
+	<div id="waitingIndicator" style="display:none;">
+		<div id="waitingSpinner">
+		</div>
+	</div>
+	<div id="progressbar"></div>
+	<div id="overlay"></div>
+</body>
+</html>

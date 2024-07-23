@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>untitled</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Mert Yentur">
+	<style type="text/css">
+	@import url("index.css");
+	</style>
+	<link rel="stylesheet" type="text/css" href="Slide8.css">
+	<script type="text/javascript" src="jquery.vj">
+	</script>
+
+	<meta name="viewport" content="viewport-fit=cover" />
+   	
+	<script type="text/javascript" src="index.vj">
+	</script>
+	<script type="text/javascript" src="jquery.retina.js">
+	</script>
+	<script type="text/javascript" src="fastclick.js">
+	</script>
+
+	<script src="chart.js"></script>
+	<script src="chartjs-plugin-datalabels.min.js"></script>
+
+	<script type="text/javascript" src="index.js"></script>
+
+<link rel="stylesheet" href="css/fontawesome.min.css"><link rel="stylesheet" href="css/froala_editor.css"><link rel="stylesheet" href="css/froala_style.css"><link rel="stylesheet" href="css/plugins/colors.css"><script type="text/javascript" src="js/froala_editor.min.js"></script><script type="text/javascript" src="js/plugins/save.min.js"></script><script type="text/javascript" src="js/plugins/colors.min.js"></script><script type="text/javascript" src="js/plugins/font_size.min.js"></script><script type="text/javascript" src="js/plugins/font_family.min.js"></script><script type="text/javascript" src="js/plugins/link.min.js"></script><script type="text/javascript" src="js/plugins/lists.min.js"></script><script src="handlebars-v4.0.10.js"></script><script src="textFit.min.js"></script></head>
+<body marginwidth="0" marginheight="0">
+	<div id="screen1" class="screen toggle active" data-screenlink="screen_1">
+		<img src='Slide8-2x.png' id="mainImage" width='1024' height='768'/>
+		<input type="number" id="tpkpr" value='0.00' min="0" step="0.01" name="total pack price"/>
+		<input type="number" id="tpknu" value='0' min="1" step="1" name="total number of packs"/>
+		<div id="packButton">GO</div>	
+		<input type="number" id="tprmg" value='0.00' min="0" step="0.01" name="total price per mg"/>
+		<input type="number" id="tpknumg" value='0' min="1" step="1" name="total number of mg"/>
+		<div id="mgsButton">GO</div>	
+	</div>
+	<!-- start of screen2 -->	
+	<div id="screen2" class="screen toggle" data-screenlink="screen_2">
+		<img src="Slide8_1-2x.png" width='1024' height='768'/>
+		<div id="cpkpr"></div>
+		<div id="cpknb"></div>
+		<div id="ctotsku"></div>
+		<div id="ctotsp"></div>
+		<input type="number" value='0.00' min="0" step="0.01" id="zpkpr" name="zessly pack price"/>
+		<div id="zpknb"></div>
+		<div id="zsku"></div>
+		<div id="ztot"></div>
+		<div id="packResultsButton">Results</div>
+		
+	</div>
+
+	<!-- start of screen3-->	
+	<div id="screen3" class="screen toggle" data-screenlink="screen_3">
+		<img src="Slide8_2-2x.png" width='1024' height='768'/>
+		<div id="in3mth"></div>
+		<div id="in6mth" ></div>
+		<div id="in9mth" ></div>
+		<div id="spcs3mth" ></div>
+		<div id="spcs6mth" ></div>
+		<div id="spcs9mth" ></div>
+		<div id="spts3mth" ></div>
+		<div id="spts6mth" ></div>
+		<div id="spts9mth" ></div>
+		<div id="zps3mth" ></div>
+		<div id="zps6mth" ></div>
+		<div id="zps9mth" ></div>
+		<div id="tapsz" ></div>
+		<div id="zessSavingsDiv" >
+			<canvas id="zessSavings" ></canvas>
+	
+		</div>
+	
+	</div>
+
+	<!-- start of screen4-->	
+	<div id="screen4" class="screen toggle" data-screenlink="screen_4">
+		<img src="Slide8_3-2x.png" width='1024' height='768'/>
+		<div id="mgcpkpr" ></div>
+		<div id="mgcpknb" ></div>
+		<div id="mgtotsku" ></div>
+		<div id="mgtotsp"  ></div>
+		<input type="number" id="mgzpkpr" value='0.00' min="0" step="0.01"  name="mg zessly pack price"/>
+		<div id="mgzpknb" ></div>
+		<div id="mgzsku" ></div>
+		<div id="mgztot"  ></div>
+		<div id="mgsResultsButton">Results</div>
+	</div>
+
+	<!-- start of screen5-->	
+	<div id="screen5" class="screen toggle" data-screenlink="screen_5">
+		<img src="Slide8_4-2x.png" width='1024' height='768'/>
+		<div id="mgin3mth"  ></div>
+		<div id="mgin6mth"  ></div>
+		<div id="mgin9mth"  ></div>
+		<div id="mgspcs3mth" ></div>
+		<div id="mgspcs6mth"  ></div>
+		<div id="mgspcs9mth"  ></div>
+		<div id="mgspts3mth"  ></div>
+		<div id="mgspts6mth"  ></div>
+		<div id="mgspts9mth" ></div>
+		<div id="mgzps3mth" ></div>
+		<div id="mgzps6mth" ></div>
+		<div id="mgzps9mth" ></div>
+		<div id="mgtapsz" ></div>
+
+		<div id="zessMGSavingsDiv" >
+			<canvas id="zessMGSavings"></canvas>
+	
+		</div>
+	</div>
+	</div>
+	<div id="nav_overlay">
+		<nav>
+	    	<img id="nav_menu" src="Slide_menu1-2x.png" width='403' height='768' alt="navigation"/>
+			<a href="pitcherSlide://1867530/3" class="nav-item" id="nav_item1_1"></a>
+			<a href="pitcherSlide://1867530/4" class="nav-item" id="nav_item1_2"></a>
+			<a href="pitcherSlide://1867530/5" class="nav-item" id="nav_item1_3"></a>
+			<a href="pitcherSlide://1867530/6" class="nav-item" id="nav_item1_4"></a>
+			<a href="pitcherSlide://1867530/7" class="nav-item" id="nav_item1_5"></a>
+			<a href="pitcherSlide://1867530/8" class="nav-item" id="nav_item1_6"></a>
+	   </nav>
+	</div>
+	<div id="nav_open"></div>	
+	<div id="nav_close"></div>
+</body>
+</html>

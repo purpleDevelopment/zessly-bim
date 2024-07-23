@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Keynote</title>
+        <link href="assets/player/KeynoteDHTMLPlayer.css" rel="stylesheet" type="text/css" media="screen"/>
+        <meta name="viewport" content="initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no, width = device-width" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script type="text/javascript" src="assets/player/prototype.js"></script>
+        <script type="text/javascript" src="assets/player/DebuggingSupport.js"></script>
+        <script type="text/javascript" src="assets/player/string.js"></script>
+        <script type="text/javascript" src="assets/player/Utilities.js"></script>
+        <script type="text/javascript" src="assets/player/KeynoteDHTMLPlayer.js"></script>
+        <script type="text/javascript" src="assets/player/ShowController.js"></script>
+        <script type="text/javascript" src="assets/player/TouchController.js"></script>
+        <script type="text/javascript" src="assets/player/DisplayManager.js"></script>
+        <script type="text/javascript" src="assets/player/StageManager.js"></script>
+        <script type="text/javascript" src="assets/player/AnimationManager.js"></script>
+        <script type="text/javascript" src="assets/player/TextureManager.js"></script>
+        <script type="text/javascript" src="assets/player/ScriptManager.js"></script>
+        <script type="text/javascript" src="assets/player/OrientationController.js"></script>
+        <script type="text/javascript" src="assets/player/KPFObjects.js"></script>
+        <script type="text/javascript" src="assets/player/SlideManager.js"></script>
+        <script type="text/javascript" src="assets/player/NavigatorController.js"></script>
+        <script type="text/javascript" src="assets/player/SlideNumberController.js"></script>
+        <script type="text/javascript" src="assets/player/HelpPlacardController.js"></script>
+        <script type="text/javascript" src="assets/player/NarrationManager.js"></script>
+        <script type="text/javascript" src="assets/player/Pitcher.js"></script>
+		<script type="text/javascript" src="fastclick.js"></script>
+		
+	</head>
+	<style>
+	#progressbar{
+		position: absolute;
+		left:10px;
+		z-index:5;
+		top:10px;
+		width:60px;
+		height:10px;
+		opacity: 0.7;
+	}
+
+	#progressbar img{
+		width: 10px;
+	}
+	
+	#stageArea{
+		-webkit-tap-highlight-color:rgba(0,0,0,0);
+	}
+	.notes{
+		left: 100px;
+		bottom: 35px;
+		background-color: #5e5e5e;
+		color: #fffeff;
+		position: absolute;
+		border: 1px solid #424242;
+		display: none;
+		height: 120px;
+		width: 824px;
+		padding: 20px;
+		opacity:0.9;
+		overflow: scroll;
+		font-family: "Sansation";
+		-webkit-overflow-scrolling: touch;
+	}
+	
+	</style>
+    <body id="body" bgcolor="transparent">
+        <div id="background" class="bigBlackSquare">
+        </div>
+        <div id="previousButton" class="PreviousButtonDisabled" style="display:none;">
+        </div>
+        <div id="nextButton" class="nextButtonDisabled" style="display:none;">
+        </div>
+        <div id="slideCounter" style="display:none;">
+        </div>
+        <span id="helpText"></span>
+        <div id="stageArea">
+            <div id="stage" class="stage">
+            </div>
+            <div id="hyperlinkPlane" class="stage" style="display:none;">
+            </div>
+        </div>
+        <div id="slideshowNavigator" style="display:none;">
+        </div>
+        <div id="slideNumberControl" style="display:none;">
+        </div>
+        <div id="slideNumberDisplay" style="display:none;">
+        </div>
+        <div id="helpPlacard" style="display:none;">
+        </div>
+        <div id="waitingIndicator">
+        	<div id="waitingSpinner">
+        	</div>
+        </div>
+		<div id="progressbar" style="z-index:3333;"></div>
+		<div id="overlay"></div>
+	</body>
+</html>

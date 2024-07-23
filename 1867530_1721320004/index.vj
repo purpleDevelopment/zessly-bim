@@ -1,0 +1,778 @@
+function addSlashes (str) {
+
+  return (str + '').replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0').replace("\"","");
+}
+
+/**
+  Pitcher calls this function on page scroll. Important: Do not add listeners on Page Init or Page Load, as those can be called when the page is cached! Instead please override the PitcherInit function.
+@override
+*/
+function pitcherInit(){
+}
+
+//global variables
+var notesShown = false;
+var isTwoD = false;
+var isPitching = false;
+var isAnimated = false;
+var blockInteraction = false;
+var hasHotspots = false;
+var currentSFDCObj = {};
+var editorUniqueKey = "";
+
+/**
+  Pitcher Remote Control calls this function to check if this specific slide has notes
+  @param {string} title - The title of the book.
+@return {number} The circumference of the circle.
+*/
+//remote control related functions
+//remote control related functions
+if (window.addEventListener){
+addEventListener("message", eventMessageListener, false);
+} else {
+
+attachEvent("onmessage", eventMessageListener);
+}
+function eventMessageListener(event){
+var cObject = JSON.parse(event.data);
+switch(cObject.command){
+case "videoPaused":
+case "videoResumed":
+  if(event.source==parent&&parent!=window){
+    $("iframe")[0].contentWindow.postMessage(event.data,'*');
+  }
+  else{
+    if(parent!=window)
+      parent.postMessage(event.data,'*');	
+  }
+  break;	
+}
+
+
+}
+/**
+  Pitcher Remote Control calls this function to check if this specific slide has notes
+ @return {string} YES/NO
+*/
+function hasNotes() {
+var hasNotes = $(".notes").html() != null;
+if (hasNotes) return "YES";
+else return "NO";
+}
+
+/**
+  Pitcher Remote Control calls this function to get the notes
+ @return {string} Contents of the notes to be visible on the device.
+*/
+function getNotes() {
+return $.trim($(".notes").html().replace(/(<([^>]+)>)/ig, ""));
+}
+
+/**
+  Adds listeners to update remote devices on video start/pause
+*/
+function addVideoListeners() {
+try {
+  var myVideo = document.getElementById('embeddedVideo');
+  myVideo.addEventListener('playing', sendVideoPlay, false);
+  myVideo.addEventListener('pause', sendVideoPlay, false);
+} catch (e) {
+
+}
+}
+
+/**
+  Listener function to update the status of the video on remote start/pause
+*/
+function toggleChart() {
+var myVideo = document.getElementById('embeddedVideo');
+if (myVideo != null) {
+  if (myVideo.paused == false) {
+    myVideo.pause();
+  } else {
+    myVideo.play();
+  }
+}
+}
+
+/**
+  Communicates with Pitcher framwork to send video messages
+*/
+function sendVideoPlay() {
+
+var myVideo = document.getElementById('embeddedVideo');
+if(myVideo.currentTime == 0 && videoHotspot!=null && videoHotspot.thirdParameter > 0){
+  myVideo.currentTime = videoHotspot.thirdParameter;
+}
+Ti.App.fireEvent('oPSend');
+}
+
+/**
+  Reaction function on clicking on OK or the image on remote control.
+*/
+function okPressedFromRemote() {
+try {
+  var video = document.getElementById('embeddedVideo');
+  if (video.paused == false) {
+    video.pause();
+  } else {
+    video.play();
+  }
+  return;
+} catch (e) {
+
+}
+try {
+  toggleChart();
+} catch (e) {
+
+}
+}
+
+//helpers
+/**
+  Gets the basename of a file path.
+  @param {string} path - Full disk path
+  @param {string} suffix - A text to remove, such as an extension
+@return {string} Basename of the file path
+*/
+function basename(path, suffix) {
+var b = path.replace(/^.*[\/\\]/g, '');
+if (typeof(suffix) == 'string' && b.substr(b.length - suffix.length) == suffix) {
+  b = b.substr(0, b.length - suffix.length);
+}
+return b;
+}
+
+/**
+  Gets the basename of a file path.
+  @param {string} path - Full disk path
+  @param {string} suffix - A text to remove, such as an extension
+@return {string} Basename of the file path
+*/
+function getPageNumber() {
+var currentPage = window.location.href;
+var basenameV = basename(currentPage, ".html");
+var lastPart = basenameV.replace("slide", "");
+var pageNumber = parseInt(lastPart);
+return pageNumber;
+}
+
+/**
+  Gets the url parameters of the existing page
+  @param {string} name - A certain parameter name, similar to PHPs $_GET function
+@return {string} value - returns the current value of the parameter provided
+*/
+function gup(name,isParent) {
+name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+var regexS = "[\\?&]" + name + "=([^&#]*)";
+var regex = new RegExp(regexS);
+var results = regex.exec(window.location.href);
+if(isParent==true){
+  results = regex.exec(window.parent.location.href);
+}
+if (results == null) return "";
+else return results[1];
+}
+
+
+//access methods used to launch other contents
+
+/**
+  Launches another online page.
+  @param {string} pageURL - http:// or https:// full link
+  @param {string} title - Title to be rendered
+*/
+function showPage(pageURL, title) {
+if(pageURL && pageURL.toLowerCase().indexOf("externalhttp")!==-1){
+  showExternalPage('http' + pageURL.substr(12));
+} else {
+  Ti.App.fireEvent('loadWebPage', {
+    'urlValue': pageURL,
+    'title': pageURL,
+    'showBar': true,
+    'allowPortrait': true
+  });
+}
+}
+/**
+  Launches another online page.
+  @param {string} pageURL - http:// or https:// full link
+  @param {string} title - Title to be rendered
+*/
+function showExternalPage(pageURL, title) {
+Ti.App.fireEvent("launchExternal", {
+  "urlV": pageURL
+});
+}
+
+/**
+  Tells Pitcher to jump to another page. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+  @param {integer} page - Page #, 0 based
+*/
+function gotoPage(page) {
+Ti.App.fireEvent('gotoVSlideH', {
+  'p': page
+});
+Ti.App.fireEvent('closeOpenModal', {});
+}
+
+/**
+  Tells Pitcher to go back one page, you can use this function to automatically calculate the previous page before a jump
+*/
+function goBack() {
+
+Ti.App.fireEvent('goBackToLastSlide', {});
+}
+
+
+/**
+  Tells Pitcher to close the active presentation
+*/
+function closePresentation() {
+
+Ti.App.fireEvent('closeScrollWeb');
+}
+
+
+/**
+  Tells Pitcher to send a custom event to Pitcher Insight engine. You can use this function to keep track of custom clicks
+*/
+function customEvent(eventName) {
+Ti.App.fireEvent('sendStatsFromHTML', {
+  'event_name': "customPresEvent",
+  'event_params': eventName,
+  'event_extra': getPageNumber()
+});
+}
+
+
+/**
+  Tells Pitcher to launch the PDF. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+  @param {string} filename - Full link to the PDF file on disk
+  @param {string} title - Title to be rendered
+  @param {string} launchMode - Advanced or Basic mode to be used by default
+  @param {string} lockMode - Enable or Disable annotations
+  @param {string} references - Custom References to be added (standard References will be ignored)
+  @param {string} subFolder - Directory of the PDF on disk
+  @param {integer} jumpPage - Page to launch PDF on. 1 based
+  @param {integer} fileID - Pitcher file ID, important for links to function properly
+*/
+function showPDF(filename, title, launchMode, lockMode, references, subFolder, jumpPage, fileID) {
+Ti.App.fireEvent('loadWebPageFromFolder', {
+  'fileID': fileID,
+  'subID':jumpPage
+});
+}
+
+/**
+  Tells Pitcher to launch the 3D file. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+  @param {string} filename - Full link to the 3D file on disk
+  @param {integer} fileID - Pitcher file ID, important for links to function properly
+*/
+function load3D(filename, fileID) {
+var folders = filename.split("/");
+if (folders.length != 0) {
+  Ti.App.fireEvent('loadThreeD', {
+    'model': folders[1],
+    'folder': folders[0],
+    'title': 'Pre Treatment CT - Dicom',
+    'fileID': fileID
+  });
+} else {
+  Ti.App.fireEvent('loadThreeD', {
+    'model': filename,
+    'title': 'Pre Treatment CT - Dicom',
+    'fileID': fileID
+  });
+}
+
+}
+
+function loadMolecule(filename,title,fileID){
+var folders = filename.split("/");
+if(folders.length!=0){
+
+  Ti.App.fireEvent('loadMolecule',{'model':folders[1],'folder':folders[0],'title':title,'fileID':fileID});
+}
+else{
+  Ti.App.fireEvent('loadMolecule',{'model':filename,'title':title,'fileID':fileID});
+
+}
+}
+
+/**
+  Tells Pitcher to launch the Presentation. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+  @param {integer} ID - Pitcher file ID
+  @param {integer} subID - Sub page to start the presentation on, 1 based
+*/
+function showPresentation(fileID, subID) {
+Ti.App.fireEvent('loadWebPageFromFolder', {
+'fileID': fileID,
+'subID':subID
+});
+}
+
+/**
+  Tells Pitcher to launch the Video. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+   @param {string} filename - Full link to the video file on disk
+param {boolean} isOnline - Whether online connection is necessary to play the video
+  param {integer} fileID - Pitcher file ID, important for links to function properly
+*/
+function playVideo(filename, isOnline, fileID) {
+Ti.App.fireEvent('loadWebPageFromFolder', {
+'fileID': fileID
+});
+}
+
+/**
+  Tells Pitcher to launch a survey. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+   @param {string} url - Full link to the survey folder on disk
+param {string} title - Title to be rendered
+  param {integer} fileID - Pitcher file ID, important for links to function properly
+*/
+function showSurvey(url, title, fileID) {
+  Ti.App.fireEvent('loadWebPageFromFolder', {
+      'fileID': fileID
+  });
+}
+
+/**
+  Tells Pitcher to launch an HTML5 file uploaded by the CMS. You can also use pitcherFile://#/# annotation. For more info please see the Developer manual
+   @param {string} url - Full link to the survey folder on disk
+param {string} title - Title to be rendered
+  param {integer} fileID - Pitcher file ID, important for links to function properly
+*/
+function showZip(url, title, fileID) {
+Ti.App.fireEvent('loadWebPageFromFolder', {
+'fileID': fileID
+});
+
+}
+
+
+
+
+
+//core functionality that Pitcher uses for rendering HTML5 generated by Conversion Engine
+
+/**
+  Pitcher calls this function on page scroll. Important: Do not add listeners on Page Init or Page Load, as those can be called when the page is cached! Instead please override the PitcherInit function.
+  @param {boolean} isPitchingV - A boolean value representing whether Pitcher is in a 'call' mode or not, so certain layers can be hidden/visible, such as hotspot opacity
+@param {boolean} isTwoDV - A boolean value representing whether Pitcher is set up to utilize 2D navigation mode, so gestures can be adjusted accordingly.
+*/
+function scrolled(isPitchingV, isTwoDV) {
+if (isTwoDV == true) {
+  isTwoD = isTwoDV;
+}
+if (isPitchingV == true) {
+  isPitching = isPitchingV;
+}
+
+}
+
+/**
+  Pitcher uses this function to check if a slide is animated, if yes, it launches Animation.html with the necessary page #
+*/
+function goToAnimation() {
+if (isAnimated) { //check if has animation
+  blockInteraction = true;
+  var pageNumber = getPageNumber() - 1;
+  var urlV = window.location.href;
+  var folders = urlV.split("/");
+  var folder = folders[folders.length - 2];
+  var parameters = {};
+  parameters.pageNumber = pageNumber;
+  parameters.isPitching = isPitching;
+  parameters.isTwoD = isTwoD;
+  Ti.App.fireEvent('loadWebPageFromSlides', {
+    'urlValue': "animation.html",
+    "parameters": parameters,
+    'hasHotspots': hasHotspots,
+    'colorBack': 'transparent',
+    'folderName': folder
+  });
+  $("#animationButton").hide();
+  setTimeout("showAnimationButton();", 2000);
+}
+}
+
+/**
+  For animated slides, Pitcher shows the animation dots.
+*/
+function showAnimationButton() {
+$("#animationButton").show();
+blockInteraction = false;
+}
+
+
+/**
+  As webview doesn't support persistent cookies, this function can be used to make persistent values stored in Pitcher encrypted database
+*/
+function setCookie(value) {
+
+Ti.App.fireEvent('setLastPage', {
+  'p': value
+});
+}
+
+
+/**
+  By default Pitcher hides tap highlight color and calls it's JSON loader
+*/
+$(document).ready(function() {
+document.documentElement.style.webkitTapHighlightColor = "rgba(0,0,0,0.0)";
+try{
+  Ti.App.fireEvent('loaded');
+  loadJSON();	
+}
+catch(e){
+  var jsonInterval = setInterval(function(e){
+    try{
+      Ti.App.fireEvent('loaded');
+      clearInterval(jsonInterval);
+      jsonInterval = null;
+      loadJSON();	
+      
+
+}
+    catch(e){
+
+    }
+  },500);
+  
+}
+
+});
+
+/**
+  This function parses the JSON, adds hotspots, puts the thermometer on the left side, and starts automatically converted animation is page is marked as animated.
+*/
+
+var videoHotspot = null;
+function loadJSON(){
+$('body').append("<div onTouchStart='sendCLM(event);' style='width:80px;height:768px;position:absolute;top:0px;left:0px;'>&nbsp;</div>");
+
+var currentLocationArray = window.location.href.split("/");
+var currentLocation = currentLocationArray[currentLocationArray.length - 1];
+
+
+$.ajax({
+  url: currentLocation.replace("html", "json"),
+  async: true
+}).done(function(jsonBody) {
+  if (jsonBody != null && jsonBody != "") {
+
+    var slideJSON = JSON.parse(jsonBody);
+    var ratio = 4.8;
+    var ratioY = ratio * (4/3) * ($(window).height()/$(window).width());
+    if (slideJSON.isAnimated == true) {
+      isAnimated = true;
+      $('body').append("<div onClick=\"goToAnimation();\" style=\"position:absolute; top:0px;left:0px;width:1024px; height:768px;\" >&nbsp;</div>");
+    }
+    if (slideJSON.hotspots != null && slideJSON.hotspots.length > 0) {
+      for (var i = 0; i < slideJSON.hotspots.length; i++) {
+        var hotspot = slideJSON.hotspots[i];
+        var launchString = "";
+        var targetObject = hotspot.actionParameter;
+        targetObject.body = addSlashes(targetObject.body);
+        switch (hotspot.actionID) {
+        case "jumpPres":
+          launchString = "gotoPage(" + (hotspot.actionParameter - 1) + ");";
+          break;
+        case "launchPres":
+          switch (targetObject.category) {
+          case "3D":
+            launchString = 'load3D(\'3DModels/' + targetObject.filename + '\',' + targetObject.ID + ');';
+            break;
+          case "molecule":
+            launchString = 'loadMolecule(\'3DModels/' + targetObject.filename + '\',\'' + targetObject.body + '\',' + targetObject.ID + ');';
+            break;
+          case "pdf":
+            launchString = 'showPDF(\'pdfs/' + targetObject.filename + '\',\'' + targetObject.body + '\',1,null,null,null,' + hotspot.secondParameter + ',' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "brochure":
+            launchString = 'showPDF(\'pdfs/' + targetObject.filename + '\',\'' + targetObject.body + '\',2,null,null,null,1,' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "video":
+            launchString = 'playVideo(\'videos/' + targetObject.filename + '\',0,' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "video-online":
+            launchString = 'playVideo(\'videos/' + targetObject.filename + '\',1,' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "surveys":
+            launchString = 'showSurvey(\'' + targetObject.filename + '\',\'' + targetObject.body + '\',' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "zip":
+            launchString = 'showZip(\'' + targetObject.filename + '\',\'' + targetObject.body + '\',' + targetObject.ID + ');';
+            hasHotspots = true;
+            break;
+          case "presentation":
+            launchString = 'showPresentation(' + targetObject.ID + ',' + hotspot.secondParameter + ')';
+            break;
+          default:
+            break;
+          }
+
+          break;
+        case "exitPres":
+          launchString = "closePresentation();";
+          break;
+
+        case "goBack":
+          launchString = "goBack();";
+          break;	
+        case "startAnimation":
+          launchString = "goToAnimation();";
+          break;
+        case "gotoURL":
+          launchString = "showPage('" + hotspot.actionParameter + "');";
+          break;
+        case "reportPres":
+          launchString = "customEvent('" + hotspot.actionParameter + "');";
+          break;
+        default:
+          break;
+        }
+        var hotspotRight = hotspot.width+hotspot.x;
+        if(hotspotRight>398){
+          hotspot.width -= hotspotRight - 398;
+        }
+        var hotspotBottom = hotspot.height+hotspot.y;
+        if(hotspotBottom>298){
+          hotspot.height -= hotspotBottom - 298;
+        }
+      
+        if (targetObject != null && targetObject.category != null && targetObject.category == "video" && hotspot.secondParameter == "1") {
+          videoHotspot = hotspot;
+          var fileID = gup("ID",true);
+          $('body').append("<div style=\"top:" + hotspot.y * ratioY + "px;left:" + hotspot.x * ratio + "px;width:" + hotspot.width * ratio + "px;height:" + hotspot.height * ratioY + "px;position:absolute; \"><iframe src=\""+window.parent.location.href.split("#position")[0].replace(fileID,targetObject.ID)+"&embedded=true"+"\" width=\"" + hotspot.width * ratio + "\" height=\"" + hotspot.height * ratioY + "\" seamless frameborder=\"0\"></div></div>");
+        } else {
+          if (false && targetObject != null && targetObject.category != null && (targetObject.category == "surveys" || targetObject.category == "zip") && hotspot.secondParameter == "1") {
+            $('body').append("<div style=\"top:" + hotspot.y * ratioY + "px;left:" + hotspot.x * ratio + "px;width:" + hotspot.width * ratio + "px;height:" + hotspot.height * ratioY + "px;position:absolute;overflow:scroll;-webkit-overflow-scrolling: touch;\"><iframe src='../surveys/" + targetObject.filename.replace(".zip", "/index.html") + "' width=" + hotspot.width * ratio + " height=" + hotspot.height * ratioY + " frameborder=0></iframe></div>");
+          } else {
+            if(hotspot.actionID=="exitPres" && hotspot.actionParameter==1){
+              $('body').bind('touchstart', function(e){
+                closePresentation();
+                e.preventDefault();
+              });
+              $('body').bind('touchend', function(e){
+                closePresentation();
+              });
+            }
+            else{
+              if(hotspot.actionID=="goBack" && hotspot.actionParameter==1){
+                $('body').bind('touchstart', function(e){
+                  goBack();
+                  e.preventDefault();
+                });
+                $('body').bind('click', function(e){
+                  goBack();
+                  e.preventDefault();
+                });	
+              }
+              else{
+                if (launchString && launchString.indexOf("showPage") > -1 && launchString.toLowerCase().indexOf("crm.com") > -1) {
+                  /* below is for free text
+                  if(launchString.toLowerCase().indexOf("freetext") > -1){
+                    editorUniqueKey = launchString + hotspot.width;
+                    var heightX = hotspot.height * ratio ;
+                    $("body").append('<div id="editor"><div id="edit"></div><div id="buttons"><div id="editButtons"><button class="ui primary button" onClick="addEditor('+heightX+');">Edit</button></div>   <div id="saveButtons"><button class="ui primary button" onClick="saveEditorContext();">Save</button><button class="ui button" onClick="discardEditor();">Discard</button></div> </div></div>');
+                    loadEditorContext();
+                    $("#editor").css("width",hotspot.width * ratio+"px");
+                    $("#editor").css("height",heightX+"px");
+                    $("#editor").css("left",(hotspot.x * ratio)+"px");
+                    $("#editor").css("top",((hotspot.y * ratio) - 100)+"px");
+                  }
+                  */
+                  // else{
+            
+                    var objParts = hotspot.actionParameter.split('crm.com/');
+                    var source = decodeURIComponent(objParts.pop());
+                    var lastString = source;
+                    try{
+                      lastString = decodeURI(lastString);
+                    }
+                    catch(exc){
+
+                    }
+                    try{
+                      var params = currentSFDCObj;
+                      var template = Handlebars.compile(lastString);
+                      var handledText = template(params);
+                  
+                      $('body').append("<div style=\"top:" + hotspot.y * ratio + "px;left:" + hotspot.x * ratio + "px;width:" + hotspot.width * ratio + "px;height:" + hotspot.height * ratio + "px;position:absolute;cursor:default;\" class='hotspot'>" + handledText + "</div>");
+                    
+                    }
+                    catch(exc){
+                    
+                    }
+                  
+                  //}
+                    
+            
+
+                }
+                else {
+                  $('body').append("<div onClick=\"" + launchString + "\" style=\"top:" + hotspot.y * ratioY + "px;left:" + hotspot.x * ratio + "px;width:" + hotspot.width * ratio + "px;height:" + hotspot.height * ratioY + "px;position:absolute; \" class='hotspot'></div>");
+                }
+              }
+          
+            }
+
+          
+          }
+
+        }
+
+      }
+    }
+    if (slideJSON.notes != null && slideJSON.notes != "") {
+      $('body').append("<div class=\"notesArea\" onClick=\"showNotes();\" style=\"top:0px;left:974px;position:absolute; \"><img height=\"40\" src=\"note.png\"></div><div class=\"notes\" onClick=\"closeNotes();\">" + slideJSON.notes + "</div>");
+
+    } else {
+
+    }
+
+  }
+
+  if (slideJSON.isAnimated == true) {
+    $('body').append("<div id='animationButton' onClick=\"goToAnimation();\" style=\"position:absolute; top:0px;left:0px;width:40px; height:40px;\" ><img src=\"animation.png\" height=\"40\" ></div>");
+    $("#animationButton").hide();
+  }
+
+  addVideoListeners();
+  $("#animationButton").hide();
+  if (isAnimated) {
+    goToAnimation();
+  } else {
+    pitcherInit();
+    $('#mainImage').retina();
+  }
+  
+});
+}
+
+function sendCLM(event) {
+var touch = event.touches[0];
+if (touch.pageX < 50) Ti.App.fireEvent('sendCLMPoint', {
+  'pX': touch.pageX,
+  'pY': touch.pageY
+});
+}
+
+
+
+
+function showHotSpots() {
+$(".hotspot").removeClass("visibleHotSpot").addClass("visibleHotSpot");
+isPitching = false;
+}
+
+function hideHotSpots() {
+$(".hotspot").removeClass("visibleHotSpot");
+isPitching = true;
+}
+
+function showNotes() {
+if (notesShown) {
+  $(".notes").hide();
+  notesShown = false;
+} else {
+  $(".notes").show();
+  notesShown = true;
+}
+}
+
+function closeNotes() {
+notesShown = false;
+$(".notes").hide();
+}
+
+  
+
+function pitcherCanClose() {
+  return true;
+}
+
+function getInfo(attr) {
+  try {
+    attr = JSON.parse(attr);
+	console.log("attr:", attr);
+    if(attr.accountObject != null) {
+      currentSFDCObj.Account = attr.accountObject;
+    }
+    if(attr.contactObjects[0] != null) {
+        currentSFDCObj.Contact = attr.contactObjects[0];
+    }
+    if(attr.contactObjects.length > 1) {
+      currentSFDCObj.Contacts = attr.contactObjects;
+    }
+  }
+  catch(e) {
+
+  }
+  
+}
+
+/* Below is for freetext
+var editor = null;
+function addEditor(heightV){
+heightV-=200;
+  (function () {
+    editor = new FroalaEditor("#edit", {
+   key:"bMA6aA6B4D3D2C1F2xROKLJKYHROLDXDRH1e1YYGRe1Bg1G3I3A2C6D6A3D3E4E2H3==",
+   attribution: false,
+  toolbarSticky: true,
+     toolbarButtons: [ ['bold', 'italic', 'underline', 'strikeThrough', 'textColor','fontFamily','fontSize', 'backgroundColor', 'undo'], ['paragraphFormat', 'align', 'formatOL', 'formatUL', 'indent', 'outdent']],
+      height: heightV
+    })
+  })();  	
+ $("#editButtons").hide();
+ $("#saveButtons").show();
+ 
+}
+function saveEditorContext(){
+ var content = editor.html.get();
+ var saveKey = "pitcher_editor";
+    try{
+      var params = currentSFDCObj;
+      saveKey = editorUniqueKey;
+    
+    }
+    catch(exc){
+    
+    }
+                
+ localStorage[saveKey] = content;
+ window.location.reload();
+}
+function discardEditor(){
+ window.location.reload();
+}
+
+function loadEditorContext(){
+try {
+  var saveKey = "pitcher_editor";
+  try{
+    saveKey = editorUniqueKey;          
+  }
+  catch(exc){
+                
+  }
+  var loadedData = localStorage[saveKey];
+  if(loadedData){
+    document.getElementById("edit").innerHTML = loadedData;											
+  }
+} catch (e) {
+  
+
+  
+}
+}
+*/

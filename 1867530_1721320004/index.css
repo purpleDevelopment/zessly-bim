@@ -1,0 +1,81 @@
+body {
+	overflow: hidden;
+}
+
+#mainImage {
+	width: 100% !important;
+	height: 100% !important;
+}
+
+.notes{
+	left: 100px;
+	bottom: 0px;
+	background-color: #5e5e5e;
+	color: #fffeff;
+	position: absolute;
+	border: 1px solid #424242;
+	display: none;
+	height: 120px;
+	width: 824px;
+	padding: 20px;
+	opacity:0.9;
+	overflow: scroll;
+	font-family: "Helvetica";
+	-webkit-overflow-scrolling: touch;
+}
+#help{
+	font-family: "Helvetica";
+	position: absolute;
+	right: -20px;
+	bottom: 0px;
+	background-color: #eaeaea;
+	border-radius: 10px;
+	padding: 10px;
+	opacity:0.8;
+}
+#closeButton{
+	width:40px;
+			height:40px;
+			text-align:center;
+			float: right;
+}
+#helpButton{
+	
+}
+
+.visibleHotSpot{
+	background-color:black;
+	opacity:0.1;
+	border-radius:15px;
+}
+.hotspot{
+	background-image:url(about:blank);
+	cursor:pointer;
+}
+
+#editor{
+	background-color:white;
+	position:absolute;
+	left:100px;
+	top:120px;
+	right:100px;
+	bottom:10px;
+}
+#buttons{
+	position:absolute;
+	bottom:0px;
+}
+#editButtons{
+}
+#saveButtons{
+	display:none;
+}
+body {
+  font-family: sans-serif;
+}
+
+section {
+  width: 81%;
+  margin: auto;
+  text-align: left;
+}

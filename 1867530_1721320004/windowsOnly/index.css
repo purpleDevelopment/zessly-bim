@@ -1,0 +1,168 @@
+body {
+    overflow: hidden;
+}
+
+#mainImage {
+    width: 100% !important;
+    height: 100% !important;
+}
+.notes{
+	left: 100px;
+	bottom: 0px;
+	background-color: #5e5e5e;
+	color: #fffeff;
+	position: absolute;
+	border: 1px solid #424242;
+	display: none;
+	height: 120px;
+	width: 824px;
+	padding: 20px;
+	opacity:0.9;
+	overflow: scroll;
+	font-family: "Helvetica";
+	-webkit-overflow-scrolling: touch;
+}
+#help{
+	font-family: "Helvetica";
+	position: absolute;
+	right: -20px;
+	bottom: 0px;
+	background-color: #eaeaea;
+	border-radius: 10px;
+	padding: 10px;
+	opacity:0.8;
+}
+#closeButton{
+	width:40px;
+			height:40px;
+			text-align:center;
+			float: right;
+}
+#helpButton{
+	
+}
+.visibleHotSpot{
+	background-color:black;
+	opacity:0.1;
+	border-radius:15px;
+}
+
+.open-popup, .open-refs, .open-prefs {
+    position: absolute;
+}
+.open-refs, .open-prefs {
+    top: 91%;
+    left: 54.3%;
+    width: 6.4%;
+    height: 9%;
+}
+.close-popup {
+    position: absolute;
+    top: 3.6%;
+    left: 2.4%;
+    width: 8.4%;
+    height: 11%;
+    z-index: 1;
+}
+.close-refs, .close-prefs {
+	display: none;
+    position: absolute;
+    top: 3%;
+    left: 2%;
+    width: 10%;
+    height: 11%;
+     z-index: 1;
+}
+.popup, .refs, .prefs{
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+.refs, .prefs {
+    background-color: rgba(0,0,0,0.5);
+}
+.popup img {
+    display: none;
+    width: 100%;
+}
+.popup img:first-child {
+    display: block;
+}
+.prefs img {
+    display: block;
+    width: 100%;
+}
+
+/* Navigation */
+#nav_overlay {
+    position: absolute;
+    overflow: hidden;
+    top: 0;
+    height: 100%;
+    right: 0;
+    width: 403px;
+}
+nav {
+    position: relative;
+    width: 403px;
+    height: 100%;
+    right: -403px;
+     z-index: 1;
+}
+#nav_menu {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+     z-index: 2;
+}
+#nav_open {
+    position: absolute;
+    right: 0%;
+    width: 7%;
+    height: 7%;
+    top: 0;
+    z-index: 1;
+}
+#nav_close {
+    position: absolute;
+    left: 12%;
+    width: 25%;
+    height: 7.5%;
+    top: 0;
+}
+.nav-item {
+    position: absolute;
+    left: 0%;
+    width: 100%;
+      z-index: 3;
+}
+#nav_item1_1 {
+    top: 7%;
+    height: 15.4%;
+}
+#nav_item1_2 {
+    top: 22.4%;
+    height: 15.5%;
+}
+#nav_item1_3 {
+    top: 38%;
+    height: 15.5%;
+}
+#nav_item1_4 {
+    top: 53.4%;
+    height: 15.5%;
+}
+#nav_item1_5 {
+    top: 69%;
+    height: 15.5%;
+}
+#nav_item1_6 {
+    top: 84.4%;
+    height: 15.5%;
+}
