@@ -29,33 +29,33 @@
 
 <link rel="stylesheet" href="css/fontawesome.min.css"><link rel="stylesheet" href="css/froala_editor.css"><link rel="stylesheet" href="css/froala_style.css"><link rel="stylesheet" href="css/plugins/colors.css"><script type="text/javascript" src="js/froala_editor.min.js"></script><script type="text/javascript" src="js/plugins/save.min.js"></script><script type="text/javascript" src="js/plugins/colors.min.js"></script><script type="text/javascript" src="js/plugins/font_size.min.js"></script><script type="text/javascript" src="js/plugins/font_family.min.js"></script><script type="text/javascript" src="js/plugins/link.min.js"></script><script type="text/javascript" src="js/plugins/lists.min.js"></script><script src="handlebars-v4.0.10.js"></script><script src="textFit.min.js"></script></head>
 <body marginwidth="0" marginheight="0">
-	<div id="screen1" class="screen toggle active" data-screenlink="screen_1">
+	<div id="screen1" class="screen toggle active">
 		<img src='Slide8-2x.png' id="mainImage" width='1024' height='768'/>
-		<input type="number" id="tpkpr" value='0.00' min="0" step="0.01" name="total pack price"/>
-		<input type="number" id="tpknu" value='0' min="1" step="1" name="total number of packs"/>
-		<div id="packButton">GO</div>	
-		<input type="number" id="tprmg" value='0.00' min="0" step="0.01" name="total price per mg"/>
-		<input type="number" id="tpknumg" value='0' min="1" step="1" name="total number of mg"/>
-		<div id="mgsButton">GO</div>	
+		<div class="toggle-btn" id="pk_btn" data-screenlink="screen2"></div>
+		<div class="toggle-btn" id="mg_btn" data-screenlink="screen4"></div>
 	</div>
 	<!-- start of screen2 -->	
 	<div id="screen2" class="screen toggle" data-screenlink="screen_2">
 		<img src="Slide8_1-2x.png" width='1024' height='768'/>
-		<div id="cpkpr"></div>
-		<div id="cpknb"></div>
+		<div class="toggle-btn home-btn" data-screenlink="screen1"></div>
+		<div id="packResults" class="toggle-btn1 pack-res" data-screenlink="screen3"></div>
+		<input class="packInput" id="cpkpr"  type="number"  value='0.00' min="0" step="0.01" id="zpkpr" name="competitor pack price" />
+		<input class="packInput" id="cpknb" type="number"  value='0' min="0" step="1" id="zpkpr" name="competitor pack price" />
 		<div id="ctotsku"></div>
 		<div id="ctotsp"></div>
-		<input type="number" value='0.00' min="0" step="0.01" id="zpkpr" name="zessly pack price"/>
+		<input class="packInput" type="number" value='0.00' min="0" step="0.01" id="zpkpr" name="zessly pack price"/>
 		<div id="zpknb"></div>
 		<div id="zsku"></div>
 		<div id="ztot"></div>
-		<div id="packResultsButton">Results</div>
-		
+
+		<div class="errorMessage"></div>
 	</div>
 
 	<!-- start of screen3-->	
 	<div id="screen3" class="screen toggle" data-screenlink="screen_3">
 		<img src="Slide8_2-2x.png" width='1024' height='768'/>
+		<div class="toggle-btn home-btn" data-screenlink="screen1"></div>
+		<div class="toggle-btn pack-btn" data-screenlink="screen2"></div>
 		<div id="in3mth"></div>
 		<div id="in6mth" ></div>
 		<div id="in9mth" ></div>
@@ -78,20 +78,25 @@
 
 	<!-- start of screen4-->	
 	<div id="screen4" class="screen toggle" data-screenlink="screen_4">
+		<div class="toggle-btn home-btn" data-screenlink="screen1"></div>
+		<div  id="mgsResults" class="toggle-btn1 pack-btn" data-screenlink="screen5"></div>
 		<img src="Slide8_3-2x.png" width='1024' height='768'/>
-		<div id="mgcpkpr" ></div>
-		<div id="mgcpknb" ></div>
+		<input class="mgInput" id="mgcpkpr"  type="number"  value='0.00' min="0" step="0.01" id="zpkpr" name="competitor pack price" />
+		<input class="mgInput" id="mgcpknb" type="number"  value='0' min="0" step="1" id="zpkpr" name="competitor pack price" />
 		<div id="mgtotsku" ></div>
 		<div id="mgtotsp"  ></div>
-		<input type="number" id="mgzpkpr" value='0.00' min="0" step="0.01"  name="mg zessly pack price"/>
+		<input class="mgInput" type="number" id="mgzpkpr" value='0.00' min="0" step="0.01"  name="mg zessly pack price"/>
 		<div id="mgzpknb" ></div>
 		<div id="mgzsku" ></div>
 		<div id="mgztot"  ></div>
 		<div id="mgsResultsButton">Results</div>
+		<div class="errorMessage"></div>
 	</div>
 
 	<!-- start of screen5-->	
 	<div id="screen5" class="screen toggle" data-screenlink="screen_5">
+		<div class="toggle-btn home-btn" data-screenlink="screen1"></div>
+		<div class="toggle-btn mg-pack-res" data-screenlink="screen4"></div>
 		<img src="Slide8_4-2x.png" width='1024' height='768'/>
 		<div id="mgin3mth"  ></div>
 		<div id="mgin6mth"  ></div>

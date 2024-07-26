@@ -14,119 +14,42 @@ input {
     width: 21.5%;
     height: 4.35%;  
 }
-input#tpknu {
-    top: 55.6%;
-}
-input#tprmg {
-    top: 72.9%;
-}
-input#tpknumg {
-     top: 81.53%;
-}
-
-div#packButton{
+#pk_btn, #mg_btn {
     position: absolute;
-    background-color: transparent;
-    border: 0;
-    border-radius: 0;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    font-size: 16px;
-    line-height: 1;   
-    top: 61.05%;
-    left: 50%;
-    width: 21.5%;
-    height: 4.35%;  
+    top: 53.05%;
+    left: 11.4%;
+    width: 34.5%;
+    height: 32.35%; 
+    cursor: pointer;
 }
 
-div#packButton{
-color: #ffffff;
-background-color: #2d63c8;
-font-size: 16px;
-border: 1px solid #2d63c8;
-padding: 5px;
-cursor: pointer
-}
-
-div#mgsButton{
+.toggle-btn1 {
     position: absolute;
-    background-color: transparent;
-    border: 0;
-    border-radius: 0;
-    font-family: Arial, sans-serif;
-    text-align: center;
-    font-size: 16px;
-    line-height: 1;   
-    top: 86.55%;
-    left: 50%;
-    width: 21.5%;
-    height: 4.35%;  
+    top: 48%;
+    width: 7%;
+    height: 8%;
+    z-index: 2;
 }
 
-div#mgsButton{
-color: #ffffff;
-background-color: #2d63c8;
-font-size: 16px;
-border: 1px solid #2d63c8;
-padding: 5px;
-cursor: pointer
+#mg_btn {
+    left: 54%;
 }
-
-
-div#mgsButton:hover, 
-div#packButton:hover  {
-			color: #2d63c8;
-			background-color: #ffffff;
-		}
-
-
+.home-btn, .pack-res, .pack-btn, .mg-pack-res, .mg-pack {
+    position: absolute;
+    top: 79.05%;
+    left: 68.4%;
+    width: 12.5%;
+    height: 5.35%; 
+    cursor: pointer;
+}
+.pack-res, .pack-btn, .mg-pack-res, .mg-pack {
+    left: 82.4%;
+}
 
         
 /*screen 2 and 4*/        
-    #screen2 div, #screen4 div{
-        position: absolute;
-        background-color: transparent;
-        font-family: Arial, sans-serif;
-    text-align: center;
-    font-size: 16px;
-    line-height: 36px;
-    }
-
-    #screen2 div, #screen4 div {
-        top: 51.2%;
-        left: 50.4%;
-        width: 13.7%;
-        height: 4.35%;
-    }
-
-    div#cpknb, div#mgcpknb {
-        left: 65.4%;
-    }
-
-    div#ctotsku, div#mgtotsku {
-        left: 80.5%;
-    }
-    div#ctotsp, div#mgtotsp  {
-        top: 59.8%;
-        width: 43.85%;
-    }
-
-    div#zpknb, div#mgzpknb {
-        top: 73%;
-        left: 65.4%;
-    }
-    div#zsku, div#mgzsku {
-        top: 73%;
-        left: 80.5%;
-    }
-    div#ztot, div#mgztot {
-        top: 81.6%;
-        width: 43.85%;
-    }
-
-
 #screen2 input, #screen4 input {
-    top: 51.2%;
+    top: 36.9%;
     left: 50.4%;
     width: 13.7%;
     height: 4.35%;
@@ -138,171 +61,230 @@ input#ctotsku, input#mgtotsku {
     left: 80.5%;
 }
 input#ctotsp, input#mgtotsp  {
-    top: 59.8%;
+    top: 45.5%;
     width: 43.85%;
 }
 input#zpkpr, input#mgzpkpr  {
-    top: 73%;
+    top: 58.6%;
     left: 50.4%;
 }
 input#zpknb, input#mgzpknb {
-    top: 73%;
+    top: 58.6%;
     left: 65.4%;
 }
 input#zsku, input#mgzsku {
-    top: 73%;
+    top: 58.6%;
     left: 80.5%;
 }
 input#ztot, input#mgztot {
-    top: 81.6%;
+    top: 67.2%;
     width: 43.85%;
 }
 
-div#packResultsButton{
+#screen2 div, #screen4 div {
     position: absolute;
-    border: 0;
-    border-radius: 0;
-    font-family: Arial, sans-serif;
+}
+div#cpknb, div#mgcpknb {
+    left: 65.4%;
     text-align: center;
-    font-size: 16px;
-    line-height: 1;   
-    top: 86.55%;
-    left: 50%;
-    width: 21.5%;
-    height: 4.35%;  
+    font-weight: bold;
+    line-height: 45px;
 }
-
-div#packResultsButton{
-color: #ffffff;
-background-color: #2d63c8;
-font-size: 16px;
-border: 1px solid #2d63c8;
-padding: 5px;
-cursor: pointer
-}
-
-div#mgsResultsButton{
-    position: absolute;
-    border: 0;
-    border-radius: 0;
-    font-family: Arial, sans-serif;
+div#ctotsku, div#mgtotsku {
+    left: 80.5%;
+    top: 36.9%;
+    width: 13.7%;
+    height: 4.35%;
     text-align: center;
-    font-size: 16px;
-    line-height: 1;   
-    top: 86.55%;
-    left: 50%;
-    width: 21.5%;
-    height: 4.35%;  
+    font-weight: bold;
+    line-height: 38px;
+}
+div#ctotsp, div#mgtotsp  {
+    top: 45.5%;
+    width: 43.85%;
+    left: 50.4%;
+    height: 4.35%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 38px;
+}
+div#zpkpr, div#mgzpkpr  {
+    top: 58.6%;
+    left: 50.4%;
+    height: 4.35%;
+}
+div#zpknb, div#mgzpknb {
+    top: 58.6%;
+    left: 65.4%;
+    height: 4.35%;
+    width: 13.7%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 38px;
+}
+div#zsku, div#mgzsku {
+    top: 58.6%;
+    left: 80.5%;
+    height: 4.35%;
+    width: 13.7%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 38px;
+}
+div#ztot, div#mgztot {
+    top: 67.2%;
+    width: 43.85%;
+    height: 4.35%;
+    left: 50.4%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 38px;
 }
 
-div#mgsResultsButton{
-color: #ffffff;
-background-color: #2d63c8;
-font-size: 16px;
-border: 1px solid #2d63c8;
-padding: 5px;
-cursor: pointer
+div.errorMessage {
+    top: 73.2%;
+    width: 43.85%;
+    height: 4.35%;
+    left: 50.4%;
+    text-align: right;
+    line-height: 38px;
+    color: red;
 }
-
-div#packResultsButton:hover, 
-div#mgsResultsButton:hover  {
-			color: #2d63c8;
-			background-color: #ffffff;
-		}
 
 
 /* screen 3 and 5 */
 
 #screen3 div, #screen5 div{
     position: absolute;
-    background-color: transparent;
-    font-family: Arial, sans-serif;
-text-align: center;
-font-size: 16px;
-line-height: 36px;
-color: #ffffff;
-font-weight: bold;
 }
 
-#screen3 div, #screen5 div {
-    top: 51.3%;
-    left: 50.4%;
-    width: 6.8%;
-    height: 6.6%;
-}
+
 div#in3mth, div#mgin3mth  {
     left: 27.6%;
+    top: 36.5%;
+    width: 6.8%;
+    height: 6.6%;
+    text-align: center;
+    font-weight: bold;
     line-height: 55px;
 }
 div#in6mth, div#mgin6mth {
     left: 35.2%;
+    top: 36.5%;
+    width: 6.8%;
+    height: 6.6%;
+    text-align: center;
+    font-weight: bold;
     line-height: 55px;
 }
 div#in9mth, div#mgin9mth {
     left: 42.6%;
+    top: 36.5%;
+    width: 6.8%;
+    height: 6.6%;
+    text-align: center;
+    font-weight: bold;
     line-height: 55px;
 }
 div#spcs3mth, div#mgspcs3mth {
-    top: 71.5%;
+    top: 56.9%;
     left: 27.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#spcs6mth, div#mgspcs6mth {
-    top: 71.5%;
+    top: 56.9%;
     left: 35.2%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#spcs9mth, div#mgspcs9mth {
-    top: 71.5%;
+    top: 56.9%;
     left: 42.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#spts3mth, div#mgspts3mth {
-    top: 76.7%;
+    top: 61.9%;
     left: 27.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#spts6mth, div#mgspts6mth {
-    top: 76.7%;
+    top: 61.9%;
     left: 35.2%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#spts9mth, div#mgspts9mth {
-    top: 76.7%;
+    top: 61.9%;
     left: 42.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
 }
 div#zps3mth, div#mgzps3mth {
-    top: 81.7%;
+    top: 67%;
     left: 27.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
     color:#000000;
 }
 div#zps6mth, div#mgzps6mth {
-    top: 81.7%;
+    top: 67%;
     left: 35.2%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
     color:#000000;
 }
 div#zps9mth, div#mgzps9mth {
-    top: 81.7%;
+    top: 67%;
     left: 42.6%;
     height: 4.5%;
+    width: 6.8%;
+    text-align: center;
+    font-weight: bold;
+    line-height: 36px;
     color:#000000;
 }
 div#tapsz, div#mgtapsz {
-    top: 43%;
+    top: 28.3%;
     left: 74.7%;
     width: 19.6%;
     height: 6.5%;
-    line-height: 50px;
     color:#000000;
+    text-align: center;
+    font-weight: bold;
+    line-height: 55px;
 }
 
 div#zessSavingsDiv{
 
     position: absolute;
-    top: 51.7%;
+    top: 36.7%;
     left: 51.9%;
     width: 42.8%;
     height: 34.4%;
@@ -312,7 +294,7 @@ div#zessSavingsDiv{
 div#zessMGSavingsDiv{
 
     position: absolute;
-    top: 51.7%;
+    top: 36.7%;
     left: 51.9%;
     width: 42.8%;
     height: 34.4%;

@@ -24,45 +24,46 @@ $(document).ready(function() {
         $('#first_popup, #study_btn').show();
     });
 
-    $('#packButton').on('click',function(){
-        calculateCompPacks()
-        $("#screen1").hide().removeClass('active');
-        $("#screen2").addClass('active');
-    });
 
-    $('#packResultsButton').on('click',function(){
-        calculatePackResults()
-        $("#screen2").hide().removeClass('active');
-        $("#screen3").addClass('active');
+    $('#packResults').on('click',function(){
+        
+        var check = checkPacks();
+        if (check){
+        calculatePackResults();
+        $(".screen.active").hide().removeClass('active');
+        $("#screen3").show().addClass('active');
+
+        }
     });
  
-    $('#mgsButton').on('click',function(){
-        calculateCompMG()
-        $("#screen1").hide().removeClass('active');
-        $("#screen4").addClass('active');
+
+    $('#mgsResults').on('click',function(){
+
+        var check = checkMGs();
+        if (check){
+            calculateMGResults()
+        $(".screen.active").hide().removeClass('active');
+        $("#screen5").show().addClass('active');
+
+        }
+
     });
 
-    $('#mgsResultsButton').on('click',function(){
-        calculateMGResults()
-        $("#screen4").hide().removeClass('active');
-        $("#screen5").addClass('active');
-    });
-
-    $("#zpkpr").on({
+    $("input.packInput").on({
         keyup: function() {
-            calculateZessPacks();
+            calculatePacks();
         },
         blur: function() { 
-            calculateZessPacks();
+            calculatePacks();
         }
     });
 
-    $("#mgzpkpr").on({
-        keyup: function() {
-            calculateZessMG();
+    $("input.mgInput").on({
+        keyup: function() {        
+            calculateMGs();
         },
         blur: function() { 
-            calculateZessMG();
+            calculateMGs();
         }
     });
 
@@ -72,24 +73,68 @@ $(document).ready(function() {
 
 });
 
+function checkPacks() {
 
-function calculateCompPacks(){
+var  error = false;
+var fields = ['#cpkpr','#zpkpr','#cpknb']
 
-    var compPrice = parseFloat($('#tpkpr').val());
-    var noPacks = parseFloat($('#tpknu').val());
+fields.forEach((field) => {
 
-    $('#cpkpr').html("&#163;"+(compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-    $('#cpknb').html(noPacks);
+    if (parseFloat($(field).val()) > 0 ){
+        $(field).css('border','none');
+        error = true;
+        $('#errorMessage').html('');
+
+    } else {
+        $(field).css('border','1px solid red');
+        error = false;
+
+        $('.errorMessage').html('Please make sure these fields are greater than 0');
+
+    }
+
+});
+return error;
+}
+
+function checkMGs() {
+
+    var  error = false;
+    var fields = ['#mgcpkpr','#mgcpknb','#mgzpkpr']
+    
+    fields.forEach((field) => {
+    
+        if (parseFloat($(field).val()) > 0 ){
+            $(field).css('border','none');
+            error = true;
+            $('#errorMessage').html('');
+    
+        } else {
+            $(field).css('border','1px solid red');
+            error = false;
+    
+            $('.errorMessage').html('Please make sure these fields are greater than 0');
+    
+        }
+    
+    });
+    return error;
+    }
+
+
+
+function calculatePacks(){
+
+    var compPrice = parseFloat($('#cpkpr').val());
+    var noPacks = parseFloat($('#cpknb').val());
+
+//    $('#cpkpr').html("&#163;"+(compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
+//    $('#cpknb').html(noPacks);
     $('#ctotsku').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits: 0}));
     $('#ctotsp').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     $('#zpknb').html(noPacks);
 
-}
-
-function calculateZessPacks(){
-
-    var noPacks = parseFloat($('#tpknu').val());
     var zessPrice = parseFloat($('#zpkpr').val());
 
     $('#zsku').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
@@ -99,8 +144,8 @@ function calculateZessPacks(){
 
 function calculatePackResults(){
 
-    var compPrice = parseFloat($('#tpkpr').val());
-    var noPacks = parseFloat($('#tpknu').val());
+    var compPrice = parseFloat($('#cpkpr').val());
+    var noPacks = parseFloat($('#cpknb').val());
     var zessPrice = parseFloat($('#zpkpr').val());
 
     var compMonth = (compPrice * noPacks)/12;
@@ -125,14 +170,14 @@ function calculatePackResults(){
     var savings = (compPrice * noPacks) - (zessPrice * noPacks);
     $('#tapsz').html("&#163;"+savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    updateSavingsChart(mChart, (compPrice * noPacks), (zessPrice * noPacks), savings)
+    updateSavingsChart(packChart, (compPrice * noPacks), (zessPrice * noPacks), savings)
 }
 
 
-function calculateCompMG(){
+function calculateMGs(){
 
-    var compPrice = parseFloat($('#tprmg').val());
-    var noPacks = parseFloat($('#tpknumg').val());
+    var compPrice = parseFloat($('#mgcpkpr').val());
+    var noPacks = parseFloat($('#mgcpknb').val());
 
     $('#mgcpkpr').html("&#163;"+(compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
     $('#mgcpknb').html(noPacks);
@@ -140,12 +185,6 @@ function calculateCompMG(){
     $('#mgtotsp').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     $('#mgzpknb').html(noPacks);
-
-}
-
-function calculateZessMG(){
-
-    var noPacks = parseFloat($('#tpknumg').val());
     var zessPrice = parseFloat($('#mgzpkpr').val());
 
     $('#mgzsku').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
@@ -155,8 +194,8 @@ function calculateZessMG(){
 
 function calculateMGResults(){
 
-    var compPrice = parseFloat($('#tprmg').val());
-    var noPacks = parseFloat($('#tpknumg').val());
+    var compPrice = parseFloat($('#mgcpkpr').val());
+    var noPacks = parseFloat($('#mgcpknb').val());
     var zessPrice = parseFloat($('#mgzpkpr').val());
 
     var compMonth = (compPrice * noPacks)/12;
@@ -201,14 +240,14 @@ function savingsChart(data1, data2, data3 ){
       type: 'bar',
       data: {
           // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
-          labels: [['Total','Comparator','Infliximab','Spend'],['Total','Zessly','(Infliximab)','Spend'],['Total annual','Potential Savings','Changing', 'to Zessly']],
+          labels: [['Total','comparator','Infliximab','spend'],['Total','Zessly','(Infliximab)','spend'],['Total annual','potential savings','changing', 'to Zessly']],
           datasets: [{
               label: '',
               data: [data1,data2,data3,],
               backgroundColor: [
-                  'rgba(96, 36, 100, 1)',
-                  'rgba(30, 146, 20, 1)',
-                  'rgba(125, 203, 178, 1)',
+                  'rgba(211, 191, 150, 1)',
+                  'rgba(0, 133, 155, 1)',
+                  'rgba(160, 209, 202, 1)',
               ]
           }]
       },
@@ -273,14 +312,14 @@ function chartMGS(data1, data2, data3 ){
       type: 'bar',
       data: {
           // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
-          labels: [['Total','Comparator','Infliximab','Spend'],['Total','Zessly','(Infliximab)','Spend'],['Total annual','Potential Savings','Changing', 'to Zessly']],
+          labels: [['Total','comparator','Infliximab','spend'],['Total','Zessly','(Infliximab)','spend'],['Total annual','potential savings','changing', 'to Zessly']],
           datasets: [{
               label: '',
               data: [data1,data2,data3,],
               backgroundColor: [
-                  'rgba(96, 36, 100, 1)',
-                  'rgba(30, 146, 20, 1)',
-                  'rgba(125, 203, 178, 1)',
+                'rgba(211, 191, 150, 1)',
+                'rgba(0, 133, 155, 1)',
+                'rgba(160, 209, 202, 1)',
               ]
           }]
       },
@@ -427,16 +466,9 @@ function hideNav() {
     $('#nav_open').show();
 }
 function toggleScreen(e) {
-// Hide the existing image  
-  $("#screen" + togCurrImg).hide().removeClass('active');
-// if the user selected the prev screen
-  if($(this).hasClass("prev-btn")) {
-    togCurrImg --;
+  // Hide the existing image  
+    $(".screen.active").hide().removeClass('active');
+  // show the new screen
+    var screen = "#" + $(this).attr("data-screenlink"); 
+    $(screen).show().addClass('active');
   }
-  else {
-    togCurrImg ++;
-  }
-// show the new screen and decide whether to show/hide the prev and next buttons
-  $("#screen" + togCurrImg).addClass('active');
-}
-
