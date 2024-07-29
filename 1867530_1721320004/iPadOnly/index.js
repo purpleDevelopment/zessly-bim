@@ -24,6 +24,31 @@ $(document).ready(function() {
         $('#first_popup, #study_btn').show();
     });
 
+    $('#pk_btn').on('click',function(){
+       $('#cpkpr').val('0.00');
+       $('#cpknb').val('0');
+       $('#zpkpr').val('0.00');
+       $('#ctotsku').html('');
+       $('#ctotsp').html('');
+       $('#zpknb').html('');
+       $('#zsku').html('');
+       $('#ztot').html('');
+   
+    });
+
+    $('#mg_btn').on('click',function(){
+        $('#mgcpkpr').val('0.00');
+        $('#mgcpknb').val('0');
+        $('#mgzpkpr').val('0.00');
+
+        $('#mgcpknb').html('');
+        $('#mgtotsku').html('');
+        $('#mgtotsp').html('');
+        $('#mgzpknb').html('');
+        $('#mgzsku').html('');
+        $('#mgztot').html('');
+     });
+
 
     $('#packResults').on('click',function(){
         
@@ -49,29 +74,90 @@ $(document).ready(function() {
 
     });
 
+
+
     $("input.packInput").on({
         keyup: function() {
+            var check = checkField($(this));
+
+          
+            if (check){
             calculatePacks();
+            }
         },
         blur: function() { 
+            var check = checkField($(this));
+
+            if (check){
             calculatePacks();
+            }
         }
     });
 
     $("input.mgInput").on({
         keyup: function() {        
+            var check = checkField($(this));
+            if (check){
             calculateMGs();
+            }
         },
         blur: function() { 
+            var check = checkField($(this));
+            if (check){
             calculateMGs();
+            }
         }
     });
 
+
+    $(".currenyInput").on("keydown focus", function (e) {
+        
+        if (parseFloat($(this).val()) == '0.00' ) {
+            $(this).val('');
+        }
+    });
+
+    $(".numberInput").on("keydown focus", function (e) {
+        
+      if (parseFloat($(this).val()) == '0' ) {
+          $(this).val('');
+      }
+  });
+
+    $(".currenyInput").on("keypress keyup blur", function (e) {
+        var x = e.charCode || e.keyCode;
+        if (isNaN(String.fromCharCode(e.which)) && x != 46) e.preventDefault();
+      });
+
+      $(".numberInput").on("keypress keyup blur", function (e) {
+        var x = e.charCode || e.keyCode;
+        if (isNaN(String.fromCharCode(e.which)) ) e.preventDefault();
+      });  
 
     packChart = savingsChart('0', '0', '0' )    
     mgsChart = chartMGS('0', '0', '0' ) 
 
 });
+
+function checkField(fieldValue) {
+
+    var  error = false;
+    if (parseFloat(fieldValue.val()) > 0 ){
+        fieldValue.removeClass('errorBorder');
+        error = true;
+        $('.errorMessage').html('');
+
+    } else {
+       // fieldValue.css('border','1px solid red');
+       fieldValue.addClass('errorBorder');
+        error = false;
+
+        $('.errorMessage').html('Please make sure these fields are greater than 0');
+
+    }
+    return error;
+}
+
 
 function checkPacks() {
 
@@ -81,12 +167,12 @@ var fields = ['#cpkpr','#zpkpr','#cpknb']
 fields.forEach((field) => {
 
     if (parseFloat($(field).val()) > 0 ){
-        $(field).css('border','none');
+        $(field).removeClass('errorBorder');
         error = true;
-        $('#errorMessage').html('');
+        $('.errorMessage').html('');
 
     } else {
-        $(field).css('border','1px solid red');
+        $(field).addClass('errorBorder');
         error = false;
 
         $('.errorMessage').html('Please make sure these fields are greater than 0');
@@ -105,12 +191,12 @@ function checkMGs() {
     fields.forEach((field) => {
     
         if (parseFloat($(field).val()) > 0 ){
-            $(field).css('border','none');
+            $(field).removeClass('errorBorder');
             error = true;
             $('#errorMessage').html('');
     
         } else {
-            $(field).css('border','1px solid red');
+            $(field).addClass('errorBorder');
             error = false;
     
             $('.errorMessage').html('Please make sure these fields are greater than 0');
@@ -128,17 +214,24 @@ function calculatePacks(){
     var compPrice = parseFloat($('#cpkpr').val());
     var noPacks = parseFloat($('#cpknb').val());
 
-//    $('#cpkpr').html("&#163;"+(compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
-//    $('#cpknb').html(noPacks);
-    $('#ctotsku').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits: 0}));
-    $('#ctotsp').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    if (isNaN(compPrice)) {
+        compPrice = 0;
+      }
+
+      if (isNaN(noPacks)) {
+        noPacks = 0;
+      }
+
+
+    $('#ctotsku').html((compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits: 0}));
+    $('#ctotsp').html((compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     $('#zpknb').html(noPacks);
 
     var zessPrice = parseFloat($('#zpkpr').val());
 
-    $('#zsku').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#ztot').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#zsku').html((zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#ztot').html((zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
 }
 
@@ -148,27 +241,39 @@ function calculatePackResults(){
     var noPacks = parseFloat($('#cpknb').val());
     var zessPrice = parseFloat($('#zpkpr').val());
 
+    if (isNaN(compPrice)) {
+        compPrice = 0;
+      }
+
+      if (isNaN(noPacks)) {
+        noPacks = 0;
+      }
+
+      if (isNaN(zessPrice)) {
+        zessPrice = 0;
+      }
+
     var compMonth = (compPrice * noPacks)/12;
     var zessMonth = (zessPrice * noPacks)/12;
 
-    $('#in3mth').html("&#163;"+((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#in6mth').html("&#163;"+((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#in9mth').html("&#163;"+((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#in3mth').html(((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#in6mth').html(((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#in9mth').html(((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    $('#spcs3mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#spcs6mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#spcs9mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#spcs3mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#spcs6mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#spcs9mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    $('#spts3mth').html("&#163;"+ ((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
-    $('#spts6mth').html("&#163;"+ ((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
-    $('#spts9mth').html("&#163;"+ ((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#spts3mth').html(((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#spts6mth').html(((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#spts9mth').html(((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
 
-    $('#zps3mth').html("&#163;"+ ((compPrice * noPacks) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#zps6mth').html("&#163;"+ ((compPrice * noPacks) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#zps9mth').html("&#163;"+ ((compPrice* noPacks) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#zps3mth').html(((compPrice * noPacks) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#zps6mth').html(((compPrice * noPacks) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#zps9mth').html(((compPrice* noPacks) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     var savings = (compPrice * noPacks) - (zessPrice * noPacks);
-    $('#tapsz').html("&#163;"+savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#tapsz').html(savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     updateSavingsChart(packChart, (compPrice * noPacks), (zessPrice * noPacks), savings)
 }
@@ -179,16 +284,24 @@ function calculateMGs(){
     var compPrice = parseFloat($('#mgcpkpr').val());
     var noPacks = parseFloat($('#mgcpknb').val());
 
-    $('#mgcpkpr').html("&#163;"+(compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
+    if (isNaN(compPrice)) {
+        compPrice = 0;
+      }
+
+      if (isNaN(noPacks)) {
+        noPacks = 0;
+      }
+
+    $('#mgcpkpr').html((compPrice).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2}));
     $('#mgcpknb').html(noPacks);
-    $('#mgtotsku').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits: 0}));
-    $('#mgtotsp').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgtotsku').html((compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits:0, maximumFractionDigits: 0}));
+    $('#mgtotsp').html((compPrice * noPacks).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     $('#mgzpknb').html(noPacks);
     var zessPrice = parseFloat($('#mgzpkpr').val());
 
-    $('#mgzsku').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgztot').html("&#163;"+(zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgzsku').html((zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgztot').html((zessPrice* noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
 }
 
@@ -198,27 +311,40 @@ function calculateMGResults(){
     var noPacks = parseFloat($('#mgcpknb').val());
     var zessPrice = parseFloat($('#mgzpkpr').val());
 
+    
+    if (isNaN(compPrice)) {
+        compPrice = 0;
+      }
+
+      if (isNaN(noPacks)) {
+        noPacks = 0;
+      }
+
+      if (isNaN(zessPrice)) {
+        zessPrice = 0;
+      }
+
     var compMonth = (compPrice * noPacks)/12;
     var zessMonth = (zessPrice * noPacks)/12;
 
-    $('#mgin3mth').html("&#163;"+((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgin6mth').html("&#163;"+((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgin9mth').html("&#163;"+((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgin3mth').html(((compMonth*3) - (zessMonth*3)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgin6mth').html(((compMonth*6) - (zessMonth*6)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgin9mth').html(((compMonth*9) - (zessMonth*9)).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    $('#mgspcs3mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgspcs6mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgspcs9mth').html("&#163;"+(compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgspcs3mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgspcs6mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgspcs9mth').html((compPrice * noPacks).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    $('#mgspts3mth').html("&#163;"+ ((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
-    $('#mgspts6mth').html("&#163;"+ ((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
-    $('#mgspts9mth').html("&#163;"+ ((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#mgspts3mth').html(((compMonth*3) + (zessMonth*9) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#mgspts6mth').html(((compMonth*6) + (zessMonth*6) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
+    $('#mgspts9mth').html(((compMonth*9) + (zessMonth*3) ).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})); 
 
-    $('#mgzps3mth').html("&#163;"+ ((compPrice * noPacks) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgzps6mth').html("&#163;"+ ((compPrice * noPacks) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
-    $('#mgzps9mth').html("&#163;"+ ((compPrice* noPacks) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgzps3mth').html(((compPrice * noPacks) - ((compMonth*3) +(zessMonth*9) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgzps6mth').html(((compPrice * noPacks) - ((compMonth*6) +(zessMonth*6) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgzps9mth').html(((compPrice* noPacks) - ((compMonth*9) +(zessMonth*3) )).toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     var savings = (compPrice * noPacks) - (zessPrice * noPacks);
-    $('#mgtapsz').html("&#163;"+savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
+    $('#mgtapsz').html(savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
     updateMGChart(mgsChart, (compPrice * noPacks), (zessPrice * noPacks), savings)
 }
@@ -240,7 +366,7 @@ function savingsChart(data1, data2, data3 ){
       type: 'bar',
       data: {
           // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
-          labels: [['Total','comparator','Infliximab','spend'],['Total','Zessly','(Infliximab)','spend'],['Total annual','potential savings','changing', 'to Zessly']],
+          labels: [['Total comparator','infliximab spend'],['Total Zessly','(infliximab) spend'],['Total annual','potential savings','changing to Zessly']],
           datasets: [{
               label: '',
               data: [data1,data2,data3,],
@@ -312,7 +438,7 @@ function chartMGS(data1, data2, data3 ){
       type: 'bar',
       data: {
           // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
-          labels: [['Total','comparator','Infliximab','spend'],['Total','Zessly','(Infliximab)','spend'],['Total annual','potential savings','changing', 'to Zessly']],
+          labels: [['Total comparator','infliximab spend'],['Total Zessly','(infliximab) spend'],['Total annual','potential savings','changing to Zessly']],
           datasets: [{
               label: '',
               data: [data1,data2,data3,],
