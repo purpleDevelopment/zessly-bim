@@ -292,6 +292,14 @@ div#zessSavingsDiv{
 
 }
 
+/*
+#zessSavingsChart{
+    width: 100% !important;
+    height: auto !important;
+position: absolute;
+transition-duration: 0;
+}*/
+
 div#zessMGSavingsDiv{
 
     position: absolute;

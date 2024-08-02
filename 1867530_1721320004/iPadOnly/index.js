@@ -1,4 +1,6 @@
 var togCurrImg = 1;
+var packChart, mgsChart;
+
 $(document).ready(function() {
     $('#nav_open').on('click',showNav);
     $('#nav_close').on('click',hideNav);
@@ -134,7 +136,7 @@ $(document).ready(function() {
         if (isNaN(String.fromCharCode(e.which)) ) e.preventDefault();
       });  
 
-    packChart = savingsChart('0', '0', '0' )    
+    packChart = savingsChart('300', '300', '300' )    
     mgsChart = chartMGS('0', '0', '0' ) 
 
 });
@@ -237,6 +239,7 @@ function calculatePacks(){
 
 function calculatePackResults(){
 
+  
     var compPrice = parseFloat($('#cpkpr').val());
     var noPacks = parseFloat($('#cpknb').val());
     var zessPrice = parseFloat($('#zpkpr').val());
@@ -275,7 +278,11 @@ function calculatePackResults(){
     var savings = (compPrice * noPacks) - (zessPrice * noPacks);
     $('#tapsz').html(savings.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}));
 
-    updateSavingsChart(packChart, (compPrice * noPacks), (zessPrice * noPacks), savings)
+   updateSavingsChart(packChart, (compPrice * noPacks), (zessPrice * noPacks), savings);
+
+/*   savingsChart((compPrice * noPacks), (zessPrice * noPacks), savings)
+    savingsChart(10000 , 5000 , 60000)
+    */
 }
 
 
@@ -361,15 +368,16 @@ function updateMGChart(myChart,value1, value2, value3){
 }
 
 function savingsChart(data1, data2, data3 ){
-  var incSavings = document.getElementById("zessSavings");
+  var incSavings = document.getElementById("zessSavingsChart");
   var myChart = new Chart(incSavings, {
       type: 'bar',
       data: {
           // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
-          labels: [['Total comparator','infliximab spend'],['Total Zessly','(infliximab) spend'],['Total annual','potential savings','changing to Zessly']],
+          labels: [['Total comparator','infliximab spend1'],['Total Zessly','(infliximab) spend'],['Total annual','potential savings','changing to Zessly']],
           datasets: [{
               label: '',
-              data: [data1,data2,data3,],
+             // data: ['5000','3000','2000'],
+             data: [data1,data2,data3,],
               backgroundColor: [
                   'rgba(211, 191, 150, 1)',
                   'rgba(0, 133, 155, 1)',
@@ -378,56 +386,21 @@ function savingsChart(data1, data2, data3 ){
           }]
       },
       options: {
+        responsive: false,
         plugins: {
           legend: {
               display: false,
               position: 'top',
-            },
-          datalabels: {
-            anchor: 'end', // remove this line to get label in middle of the bar
-            align: 'end',
-            clamp: 'true',
-
-
-           labels: {
-           title: {
-            font: {
-              weight: 'bold',
-              size: '16px'
+              labels: {
+                // This more specific font property overrides the global property
+                font: {
+                    size: '10',
+                }
             }
           },
-            value: {
-              color: '#ffffff'
-            }
-          } 
-
-          },    
-          scales: {
-              y: {
-                display: false,
-                gridLines: {}
-                  //  beginAtZero: true,
-                  //   ticks: {
-                  //    callback: function(value, index, values) {
-                  //var str = value.toString();
-                  //                      return '£'+str.toLocaleString();
-                  //                }
-                  //},
-                  }
-              },
-              x: {
-                ticks: {
-                  color: '#000000',
-                  font: {
-                        weight: 600,
-                      size: 12,
-                    } ,
-               },
-               stacked: true, 
-              grid: { display: false },
-              }
-          }
-      }
+        }
+      }  
+      
   });
   return myChart;
 
@@ -450,61 +423,24 @@ function chartMGS(data1, data2, data3 ){
           }]
       },
       options: {
+        responsive: false,
         plugins: {
           legend: {
               display: false,
               position: 'top',
-            },
-          datalabels: {
-            anchor: 'end', // remove this line to get label in middle of the bar
-            align: 'end',
-            clamp: 'true',
-
-
-           labels: {
-           title: {
-            font: {
-              weight: 'bold',
-              size: '16px'
+              labels: {
+                // This more specific font property overrides the global property
+                font: {
+                    size: '10',
+                }
             }
           },
-            value: {
-              color: '#ffffff'
-            }
-          } 
-
-          },    
-          scales: {
-              y: {
-                display: false,
-                gridLines: {}
-                  //  beginAtZero: true,
-                  //   ticks: {
-                  //    callback: function(value, index, values) {
-                  //var str = value.toString();
-                  //                      return '£'+str.toLocaleString();
-                  //                }
-                  //},
-                  }
-              },
-              x: {
-                ticks: {
-                  color: '#000000',
-                  font: {
-                        weight: 600,
-                      size: 12,
-                    } ,
-               },
-               stacked: true, 
-              grid: { display: false },
-              }
-          }
-      }
+        }
+      }  
   });
   return myChart;
 
 }
-
 
 
 function openPopup(e) {

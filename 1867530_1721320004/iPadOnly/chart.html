@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+
+    <script type="text/javascript" src="jquery.vj">
+	</script>
+
+	<meta name="viewport" content="viewport-fit=cover" />
+   	
+	<script type="text/javascript" src="index.vj">
+	</script>
+	<script type="text/javascript" src="jquery.retina.js">
+	</script>
+	<script type="text/javascript" src="fastclick.js">
+	</script>
+<script src="chart.js"></script>
+
+<script>
+
+var packChart;
+
+$(document).ready(function() {
+
+    packChart = buildChart('0', '0', '0' );
+    
+    $('#showChart').on('click',function(){
+
+        $('#testChart').attr('style','display:block');
+        updateChart(packChart,100,500, 300);
+      /* buildChart('5000', '2000', '10000' )    */
+    });
+
+
+
+});
+
+function updateChart(myChart,value1, value2, value3){
+    myChart.destroy();  
+    packChart = buildChart(value1, value2, value3);
+}
+
+function buildChart(value1, value2, value3){
+    var incSavings = document.getElementById("zessSavings");
+  var myChart = new Chart(incSavings, {
+      type: 'bar',
+      data: {
+          // labels: ['Potential annual savings available by switching to Rixathon','Savings in year one if switched in 2 months','Savings in year one if switched in 3 months','Savings in year one if switched in 6 months'],
+          labels: [['Total comparator','infliximab spend'],['Total Zessly','(infliximab) spend'],['Total annual','potential savings','changing to Zessly']],
+          datasets: [{
+              label: '',
+              data: ['5000','3000','2000'],
+              backgroundColor: [
+                  'rgba(211, 191, 150, 1)',
+                  'rgba(0, 133, 155, 1)',
+                  'rgba(160, 209, 202, 1)',
+              ]
+          }]
+      },
+      
+    });
+
+    return myChart;
+
+}
+
+
+</script>
+
+
+</head>
+<body>
+
+<button id="showChart">Show</button>
+
+<div id="testChart" style="display:none">
+    <canvas id="zessSavings" ></canvas>
+
+</div>
+
+</body>
+
+</html>
